@@ -1,36 +1,46 @@
+---
+output: github_document
+editor_options: 
+  chunk_output_type: console
+---
 
+
+ 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # Grym
 
 An implementation of the generalized yeild model in R.
 
 ## Installing
 
-The package is easily installed from GitHub, using the devtools package.
+The package is easily installed from GitHub, using the devtools package. 
 
-``` r
+```R
 remotes::install_github("AustralianAntarcticDivision/Grym")
 ```
 
-If you don’t have `remotes` installed already, install it first.
+If you don't have `remotes` installed already, install it first. 
 
-``` r
+```R
 install.packages("remotes")
 ```
 
 Grym does not otherwise require remotes for normal use.
 
+
 ## TODO
+
+
+
+
 
 # Grym
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
-The goal of Grym is to have provide an R based implementation of the
-Generalised Yield Model @GYM96
+The goal of Grym is to have provide an R based implementation of the Generalised Yield Model @GYM96
+
 
 ## Example
 
