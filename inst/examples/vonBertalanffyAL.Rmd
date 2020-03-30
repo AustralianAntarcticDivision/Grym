@@ -1,0 +1,58 @@
+## vonBertalanffyAL
+
+The GYM uses the von Bertalanffy growth curve 
+\[
+L = L_{\infty} \left ( 1 - e^{-K (A-t_{0})} \right )
+\]
+to map ages to lengths.
+
+The `vonBertalanffyAL` function implments the von Bertalanffy growth
+curve as parameterized in the GYM
+```{r}
+age <- 2:8
+
+## Convert age to length
+len <- vonBertalanffyAL(age,t0=0.0667,K=0.5,Linf=500)
+len
+```
+
+and `vonBertalanffyLA` is the inverse mapping 
+```{r}
+## Convert length to age
+age <- vonBertalanffyLA(len,t0=0.0667,K=0.5,Linf=500)
+age
+```
+
+
+#### Length at age
+
+Define age classes and within year time steps
+```{r}
+## Daily time steps and 7 age classes
+nsteps <- 365
+Ages <- 2:8
+Days <- seq(0,1,length=nsteps+1)
+h <- 1/nsteps
+```
+
+Create a matrix of the age at each time step of each age class
+```{r}
+## Ages
+ages <- outer(Days,Ages,FUN="+")
+```
+
+Use a von Bertalanffy length at age relationship to create a matrix of
+the length at each time step of each age class
+```{r}
+## Age-length conversion
+ls <- vonBertalanffyAL(ages,t0=0.0667,K=0.5,Linf=500)
+matplot(Days,ls,type="l",lty=1,xlab="Day",ylab="Length",main="Length at Age")
+```
+
+The restriced model assumes that growth is restricted to some fraction
+of the year 
+```{r}
+## Age-length conversion - growth occurs in middle of the year
+ls <- vonBertalanffyRAL(ages,t0=0.0667,K=0.5,Linf=500,f0=0.3,f1=0.7)
+matplot(Days,ls,type="l",lty=1,xlab="Day",ylab="Length",main="Length at Age")
+```

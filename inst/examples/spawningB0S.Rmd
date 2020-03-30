@@ -1,0 +1,73 @@
+## spawningB0S
+
+The `spawningB0S` function provides a stochastic estimate of the
+virgin spawning stock biomass by repeatedly simulating the virgin age
+structure and projecting forward to compute the spawning biomass.
+
+#### Setup
+
+Define age classes and within year time steps
+```{r}
+## Daily time steps and 7 age classes
+nsteps <- 365
+Ages <- 2:8
+Days <- seq(0,1,length=nsteps+1)
+h <- 1/nsteps
+```
+
+Create matrices of age, length and weight for each time step and age class
+```{r}
+## Ages
+ages <- outer(Days,Ages,FUN="+")
+## Age-length and length-weight conversions
+ls <- vonBertalanffyAL(ages,t0=0.0667,K=0.5,Linf=500)
+ws <- powerLW(ls,9E-10,3.32)
+```
+
+Define the intra-annual natural mortality, its integral and the annual scaling
+```{r}
+## Constant intra-annual natural mortality
+ms <- matrix(1,nsteps+1,length(Ages))
+ms <- ms/mean(trapz(ms,h))
+Ms <- ctrapz(ms,h)
+Msf <- final(Ms)
+```
+
+#### Random Recruits
+
+Calculate model parameters for the proportional recruitment model
+when \(R\) has mean and variance 0.3 and 0.01
+```{r}
+## Compute model parameters that give mean R = 0.3 and var R = 0.01,
+## when R is the proportion of recruits in the population
+ps <- prRecruitParsIB(mnR=0.2,vrR=0.01,Msf)
+## Estimated natural mortality scaling
+ps$M
+```
+
+Generate 1000 sets of 10 recruitment events
+```{r}
+R <- matrix(prRecruitsIB(10000,ps),1000,10)
+```
+
+
+#### Virgin Spawning Biomass 
+
+
+Determine the fraction mature at age from length at age
+```{r}
+## Maturity at age
+gs <- rampOgive(ls,410,40)
+```
+
+If the spawing period is from day 200 to day 280 (time steps 201 to 281)
+```{r}
+## Increments in the spawning period
+spawn <- 201:281
+```
+then estimates of the median, mean and standard deviation of the
+virgin spawning stock biomass are 
+```{r}
+## Virgin spawning stock abundance
+spawningB0S(R,ws,gs,Ms,ps$M,spawn)
+```

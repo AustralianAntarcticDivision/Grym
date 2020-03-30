@@ -1,0 +1,146 @@
+## surveyAdjustGYM
+
+The `surveySurival` function adjusts surveyed age class abundances to
+initial abundances at a reference age class as implemented in the GYM.
+Where abundance is estimated from multiple surveys, abundance is
+estimated as a geometric mean of the estimates from individual surveys
+weighted by the inverse of the squared *coefficient of variation* of
+the surveyed density.
+
+
+
+#### Survey Data
+
+```{r}
+survey.df <- read.csv(text="Survey,Year,Age,Density,SE,Scale,Start,End
+1,1989,3,0.01,0.01,50340.67,178,179
+1,1989,4,8.15,8.96,50340.67,178,179
+1,1989,5,6.58,7.13,50340.67,178,179
+1,1989,6,0.01,0.01,50340.67,178,179
+1,1989,7,0.01,0.01,50340.67,178,179
+2,1992,3,10.02,8.97,42308.13,281,282
+2,1992,4,14.12,12.9,42308.13,281,282
+2,1992,5,0.01,0.01,42308.13,281,282
+2,1992,6,15.96,19.26,42308.13,281,282
+2,1992,7,19.87,21.84,42308.13,281,282
+3,1998,3,8.72,7.63,81105.82,120,121
+3,1998,4,0.01,0.01,81105.82,120,121
+3,1998,5,73.32,65.51,81105.82,120,121
+3,1998,6,94.41,104.99,81105.82,120,121
+3,1998,7,0.01,0.01,81105.82,120,121
+3,1998,8,36.55,31.68,81105.82,120,121
+4,2000,3,7.04,8.31,84767.1,175,176
+4,2000,4,12.6,15.56,84767.1,175,176
+4,2000,5,30.79,35.74,84767.1,175,176
+4,2000,6,56.52,47.78,84767.1,175,176
+4,2000,7,27.55,30.16,84767.1,175,176
+5,2001,3,10.51,9.37,86130.6,175,176
+5,2001,4,14.51,17.19,86130.6,175,176
+5,2001,5,0.01,0.01,86130.6,175,176
+5,2001,6,37.78,42.56,86130.6,175,176
+5,2001,7,30.29,37.05,86130.6,175,176
+6,2002,3,8.59,10.36,42865.61,153,154
+6,2002,4,24.15,23.4,42865.61,153,154
+6,2002,5,35.82,30.15,42865.61,153,154
+6,2002,6,24.58,21.35,42865.61,153,154
+7,2003,3,0.01,0.01,86229.58,156,157
+7,2003,4,25.4,28.86,86229.58,156,157
+7,2003,5,68.98,66,86229.58,156,157
+7,2003,6,59.71,74.47,86229.58,156,157
+8,2004,3,0.01,0.01,85208.41,156,157
+8,2004,4,0.01,0.01,85208.41,156,157
+8,2004,5,28.67,29.37,85208.41,156,157
+8,2004,6,24.2,29.24,85208.41,156,157
+9,2005,3,0.01,0.01,84305.83,171,172
+9,2005,4,11.77,11.17,84305.83,171,172
+9,2005,5,0.01,0.01,84305.83,171,172
+9,2005,6,19.68,18.49,84305.83,171,172",header=TRUE)
+```
+
+
+#### Setup
+
+Define age classes and within year time steps
+```{r}
+## Daily time steps and 7 age classes
+nsteps <- 365
+Ages <- 2:8
+Days <- seq(0,1,length=nsteps+1)
+h <- 1/nsteps
+```
+
+Define the intra-annual natural mortality and its integral
+```{r}
+## Constant intra-annual natural mortality
+ms <- matrix(1,nsteps+1,length(Ages))
+ms <- ms/mean(trapz(ms,h))
+Ms <- ctrapz(ms,h)
+```
+
+Suppose surveys are conducted in years 3, 4 and 5, starting on time
+step 190 in year 1, time step 220 in year 2 and time step 150 in year
+3, and in each case the survey lasted 12 days and all age classes were
+surveyed.
+```{r}
+## Survey year, period and age classes
+svy <- data.frame(yr=3:5,s1=c(190,220,150),s2=c(201,231,161))
+svy <- cbind(svy[rep(1:3,each=7),],cls=1:7)
+head(svy)
+```
+
+
+#### Constant mortality
+
+Assume there is no inter-annual variability in natural mortality and
+the annual scalings of natural mortality is constant
+```{r}
+## Constant mortality
+M <- 0.2
+```
+
+Convert surveyed age to the modelled age class
+```{r}
+## Convert age to age class
+survey.df$AgeClass <- survey.df$Age-min(Ages)+1
+```
+
+Estimate the abundance of the first age class
+```{r}
+## Adjust survey abundances to abundance of reference age class
+surveyAdjustGYM(survey.df,Ms,M,rcls=1)
+```
+
+
+#### Variable mortality
+
+When there is inter-annual variability in natural mortality
+```{r}
+## Variable mortality
+M <- runif(22,0.2,0.201)
+```
+
+The labelling of survey years (`Year`) must corresponds to the elements of
+`M` (so `Year==1` corresponds to `M[1]`)
+```{r}
+## M[1] must correspond to Year==1
+survey.df$Year0 <- survey.df$Year
+survey.df$Year <- survey.df$Year0-1983
+```
+
+Estimate the abundance of the first age class
+```{r}
+## Adjust survey abundances to abundance of reference age class
+rec.df <- surveyAdjustGYM(survey.df,Ms,M,rcls=1)
+rec.df$Year <- rec.df$Year+1983
+rec.df
+```
+
+Abundance cannot be estimated for cohorts that must be projected
+outside the time interval spanned by `M`
+```{r}
+survey.df$Year <- survey.df$Year0-1985
+## Adjust survey abundances to abundance of reference age class
+rec.df <- surveyAdjustGYM(survey.df,Ms,M,rcls=1)
+rec.df$Year <- rec.df$Year+1985
+rec.df
+```

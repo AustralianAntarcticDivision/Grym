@@ -1,0 +1,146 @@
+## Stock Summary
+
+The `spawningStock` function extracts the spawning stock abundance or
+biomass from a projection, while `vulnerableStock` and
+`vulnerableStockGYM` extracts abundance or biomass vulnerable to
+fishing from a projection.
+
+#### Setup
+
+Define age classes and within year time steps
+```{r}
+## Daily time steps and 7 age classes
+nsteps <- 365
+Ages <- 2:8
+Days <- seq(0,1,length=nsteps+1)
+h <- 1/nsteps
+```
+
+Create matrices of age, length and weight for each time step and age class
+```{r}
+## Ages
+ages <- outer(Days,Ages,FUN="+")
+## Age-length and length-weight conversions
+ls <- vonBertalanffyAL(ages,t0=0.0667,K=0.5,Linf=500)
+ws <- powerLW(ls,9E-10,3.32)
+```
+
+Define the normalized intra-annual natural mortality, its integral and
+the annual scaling 
+```{r}
+## Constant intra-annual natural mortality
+ms <- matrix(1,nsteps+1,length(Ages))
+ms <- ms/mean(trapz(ms,h))
+Ms <- ctrapz(ms,h)
+Msf <- final(Ms)
+M <- 0.1
+```
+
+Create the vector of within year distribution of fishing effort,
+assuming fishing occurs on days 80 to 119, and define a length based
+selectivity
+```{r}
+## Normalized within year distribution of fishing effort
+fwy <- double(nsteps+1)
+fwy[81:220] <- 1
+fwy <- fwy/trapz(fwy,h)
+## Length based selectivity
+ss <- rampOgive(ls,420,30)
+```
+
+Define the normalized intra-annual fishing mortality, its integral and
+the annual scaling.
+```{r}
+## Intra-annual fishing mortality - effort by selectivity
+fs <- fwy*ss
+Fs <- ctrapz(fs,h)
+Fsf <- final(Fs)
+F <- 0.2
+```
+
+Compute an intial age structure assuming constant mortalities and
+assuming no plus class
+```{r}
+## Deterministic initial age structure
+N0 <- ageStructureD(M*Msf,F*Fsf)
+N0
+```
+
+Project forward for a single year with known mortalities
+```{r}
+## Annual projection from N0
+pr <- project(ws,M*Ms,F*Fs,F*fs,Nref=N0,yield=2)
+```
+
+#### Initial and Final
+
+Extract the initial and final abundances in each age class
+```{r}
+## Initial abundance
+initial(pr$N)
+## Final abundance
+final(pr$N)
+```
+
+
+#### Spawning Stock 
+
+
+Determine the fraction mature at age from length at age
+```{r}
+## Maturity at age
+gs <- rampOgive(ls,410,40)
+```
+
+If the spawning period is from day 200 to day 280 (time steps 201 to 281)
+```{r}
+## Increments in the spawning period
+spawn <- 201:281
+```
+then the spawning stock abundance and biomass are
+```{r}
+## Spawning stock abundance
+spawningStock(pr$N,gs,spawn)
+## Spawning stock biomass
+spawningStock(pr$B,gs,spawn)
+```
+
+#### Exploitable and Vulnerable Stock
+
+The `exploitableStock` function calculates the mean abundance or
+biomass that can be exploited by scaling the abundance or biomass by
+selectivity, `vulnerableStock` computes the effort weighted mean
+exploitable stock abundance or biomass.
+
+If the exploitable and vulnerable biomass are identical when
+fishing effort is constant within the monitoring period
+```{r}
+## Monitoring period within fishing season
+monitor <- 101:151
+## Exploitable biomass
+exploitableStock(pr$B,ss,monitor)
+## Weighted vulnerable biomass
+vulnerableStock(pr$B,ss,fwy,monitor)
+```
+but may differ if the fishing effort varies varies within the
+monitoring period
+```{r}
+## Monitoring period spans fishing season
+monitor <- 41:101
+## Exploitable biomass
+exploitableStock(pr$B,ss,monitor)
+## Vulnerable biomass weights by effort
+vulnerableStock(pr$B,ss,fwy,monitor)
+```
+
+If the monitoring period is outside the fishing season, vulnerable biomasss is zero
+```{r}
+## No effort in monitoring period
+monitor <- 11:31
+## Exploitable biomass
+exploitableStock(pr$B,ss,monitor)
+## Vulnerable biomass weights by effort
+vulnerableStock(pr$B,ss,fwy,monitor)
+```
+
+

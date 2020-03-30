@@ -1,0 +1,56 @@
+## powerLW
+
+The GYM uses a simple power law model
+\[
+W = a L^b
+\]
+to map lengths to weights.
+
+The `powerLW` function implements the power law model as parameterized
+in the GYM
+```{r}
+len <- seq(150,450,50)
+
+## Convert length to weight
+wgt <- powerLW(len,9.0E-10,3.32)
+wgt
+```
+
+and `powerWL` is the inverse mapping
+```{r}
+## Convert weigth to length
+len <- powerWL(wgt,9.0E-10,3.32)
+len
+```
+
+#### Weight at age
+
+Define age classes and within year time steps
+```{r}
+## Daily time steps and 7 age classes
+nsteps <- 365
+Ages <- 2:8
+Days <- seq(0,1,length=nsteps+1)
+h <- 1/nsteps
+```
+
+Create a matrix of the age at each time step of each age class
+```{r}
+## Ages
+ages <- outer(Days,Ages,FUN="+")
+```
+
+Use a von Bertalanffy length at age relationship to create a matrix of
+the length at each time step of each age class
+```{r}
+## Age-length conversion
+ls <- vonBertalanffyAL(ages,t0=0.0667,K=0.5,Linf=500)
+```
+
+and a power law weight-length relationship to create a matrix of the
+weight at each time step of each age class
+```{r}
+## Length-weight conversion
+ws <- powerLW(ls,9E-10,3.32)
+matplot(Days,ws,type="l",lty=1,xlab="Day",ylab="Weight",main="Weight at Age")
+```

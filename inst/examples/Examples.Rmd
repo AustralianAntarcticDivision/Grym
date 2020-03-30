@@ -1,0 +1,111 @@
+---
+title: "Examples"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc-depth: 2
+vignette: >
+  %\VignetteIndexEntry{Examples}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = NA,
+  fig.width=6,
+  fig.height=5
+)
+```
+
+```{r,include=FALSE}
+options(knitr.duplicate.label = 'allow')
+knitr::purl("vonBertalanffyAL.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("powerLW.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("rampOgive.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("trapz.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("trapzMeans.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("project.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("projectC.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("advance.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("rescaleProjection.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("ageStructureD.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("ageStructureS.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("stockSummary.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("spawningB0D.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("spawningB0S.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("prRecruits.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("prRecruitsGYM.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("prBootstrap.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("resampleRGYM.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("surveySurvival.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("surveyAdjustGYM.Rmd",documentation=0,quiet=TRUE)
+```
+
+This document collates and annotates the examples from Grym.
+```{r setup}
+library(Grym)
+```
+
+```{r,child="vonBertalanffyAL.Rmd"}
+```
+
+```{r,child="powerLW.Rmd"}
+```
+
+```{r,child="rampOgive.Rmd"}
+```
+
+```{r,child="trapz.Rmd"}
+```
+
+```{r,child="trapzMeans.Rmd"}
+```
+
+```{r,child="project.Rmd"}
+```
+
+```{r,child="projectC.Rmd"}
+```
+
+```{r,child="advance.Rmd"}
+```
+
+```{r,child="rescaleProjection.Rmd"}
+```
+
+```{r,child="ageStructureD.Rmd"}
+```
+
+```{r,child="ageStructureS.Rmd"}
+```
+
+```{r,child="stockSummary.Rmd"}
+```
+
+```{r,child="spawningB0D.Rmd"}
+```
+
+```{r,child="spawningB0S.Rmd"}
+```
+
+```{r,child="prRecruits.Rmd"}
+```
+
+```{r,child="prRecruitsGYM.Rmd"}
+```
+
+```{r,child="prBootstrap.Rmd"}
+```
+
+```{r,child="resampleRGYM.Rmd"}
+```
+
+```{r,child="surveySurvival.Rmd"}
+```
+
+
+```{r,child="surveyAdjustGYM.Rmd"}
+```
+

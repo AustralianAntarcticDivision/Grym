@@ -1,0 +1,86 @@
+## surveySurvival
+
+The `surveySurvival` function computes the total survival of a cohort
+from time of recruitment to a nominated survey period given specified
+natural and fishing mortalities.  The resulting survivals can be used
+to backproject age based abundance survey data to estimate
+recruitment.
+
+#### Setup
+
+Define age classes and within year time steps
+```{r}
+## Daily time steps and 7 age classes
+nsteps <- 365
+Ages <- 2:8
+Days <- seq(0,1,length=nsteps+1)
+h <- 1/nsteps
+```
+
+Define the intra-annual natural mortality and its integral
+```{r}
+## Constant intra-annual natural mortality
+ms <- matrix(1,nsteps+1,length(Ages))
+ms <- ms/mean(trapz(ms,h))
+Ms <- ctrapz(ms,h)
+```
+
+Suppose surveys are conducted in years 3, 4 and 5, starting on time
+step 190 in year 1, time step 220 in year 2 and time step 150 in year
+3, and in each case the survey lasted 12 days and all age classes were
+surveyed.
+```{r}
+## Survey year, period and age classes
+svy <- data.frame(yr=3:5,s1=c(190,220,150),s2=c(201,231,161))
+svy <- cbind(svy[rep(1:3,each=7),],cls=1:7)
+head(svy)
+```
+
+
+#### Constant mortality
+
+Assume there is no inter-annual variability in natural mortality and
+the annual scalings of natural mortality is constant
+```{r}
+## Constant mortality
+M <- 0.2
+```
+
+The total mean survival for the cohort from the start of the year in
+which they were in the first age class to the survey period is
+```{r}
+## Survival to the survey period from age class 1
+surveySurvival(svy$yr,svy$cls,svy$s1,svy$s2,Ms,M)
+```
+
+The computed survivals can be used to project cohort abundances the
+initial abundance for the first age class.
+
+To compute the mean survival for the cohort from the start of the year
+in which they were in the third age class o the survey period
+```{r}
+## Survival to the survey period from age class 3
+surveySurvival(svy$yr,svy$cls,svy$s1,svy$s2,Ms,M,rcls=3)
+```
+For age classes younger than third age class at the time of survey the
+surival is greater than 1.
+
+
+#### Variable mortality
+
+When there is inter-annual variability in natural mortality
+```{r}
+## Variable mortality
+M <- rgamma(10,20,100)
+M
+```
+
+the labelling of survey years (`yr`) corresponds to the elements of
+`M` (so `yr==1` corresponds to `M[1]`) and survival cannot be
+estimated for cohorts that must be projected outside the time interval
+spanned by `M`.
+```{r}
+## Survival cannot be projected outside the period for which mortality
+## is specified.
+surveySurvival(svy$yr,svy$cls,svy$s1,svy$s2,Ms,M)
+```

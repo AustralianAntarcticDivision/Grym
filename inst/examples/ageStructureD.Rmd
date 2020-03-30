@@ -1,0 +1,104 @@
+## ageStructureD
+
+The `ageStructureD` function computes the equilibrium age structure of
+the population assuming the recruitment and the annual scalings of
+natural and fishing mortality are constant
+
+#### Setup
+
+Define age classes and within year time steps
+```{r}
+## Daily time steps and 7 age classes
+nsteps <- 365
+Ages <- 2:8
+Days <- seq(0,1,length=nsteps+1)
+h <- 1/nsteps
+```
+
+Create matrices of age, length and weight for each time step and age class
+```{r}
+## Ages
+ages <- outer(Days,Ages,FUN="+")
+## Age-length and length-weight conversions
+ls <- vonBertalanffyAL(ages,t0=0.0667,K=0.5,Linf=500)
+ws <- powerLW(ls,9E-10,3.32)
+```
+
+Define the intra-annual natural mortality, its integral and the annual scaling
+```{r}
+## Constant intra-annual natural mortality
+ms <- matrix(1,nsteps+1,length(Ages))
+ms <- ms/mean(trapz(ms,h))
+Ms <- ctrapz(ms,h)
+Msf <- final(Ms)
+M <- 0.2
+```
+
+#### Age structure
+
+Compute and initial age structure assuming no fishing and no plus group
+```{r}
+## Deterministic initial age structure assuming no fishing and no plus
+## group
+N0 <- ageStructureD(M*Msf)
+N0
+```
+
+Projecting forward with the same mortality used to compute the
+equilibrium age structure should leave the abundances stable
+```{r}
+## Annual projection from N0
+pr <- project(ws,M*Ms,Nref=N0)
+## Initial and final abundance
+pr$N[c(1,nsteps+1),]
+```
+
+The deterministic age structure should match the stochastic age structure for
+constant recruitment and mortalities.  If the last class is not a plus
+class
+```{r}
+## Deterministic initial age structure with no plus class
+ageStructureD(M*Msf)
+## Stochastic initial age structure with constant recruitment
+ageStructureS(rep(1,20),Msf,M)
+```
+
+If the last class is a plus class aggregrating 50 additional age classes
+```{r}
+## Deterministic initial age structure assuming the plus class
+## aggregates 50 additional age classes
+ageStructureD(M*Msf,plus=20)
+## Stochastic initial age structure with constant recruitment with
+## plus class
+ageStructureS(rep(1,7+20),Msf,M,plus=TRUE)
+```
+
+For the deterministic computation, the plus class can contain an infinite number
+of additional age classes
+```{r}
+## Deterministic initial age structure assuming no upper limit on age
+ageStructureD(M*Msf,plus=Inf)
+```
+
+
+#### Scaling
+
+By default the scaling of the abundances are determined by the level
+of recruitment
+```{r}
+## Scale to recruitment
+N0 <- ageStructureD(M*Msf,R=8000)
+N0
+```
+
+Alternately, the age structure can used as a relative abundances and
+scaled to a mid-year survey biomass with `project`
+```{r}
+## Scale age structure to biomass estimated from a five day mid-year
+## survey (days 150 to 154)
+Bsurvey <- 15000 
+N0 <- ageStructureD(M*Msf)
+pr <- project(ws,M*Ms,0,0,Nref=N0,nref=1,Bref=Bsurvey,bref=151:155)
+N0 <- initial(pr$N)
+N0
+```
