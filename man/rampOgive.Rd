@@ -24,7 +24,7 @@ Compute a ramp shaped ogive function, parameterized so that \code{x50}
 is the middle of the ramp, and \code{xrange} its width.
 }
 \examples{
-x <- seq(150,450,50)
+x <- seq(150,450,10)
 p <- rampOgive(x,300,80)
 plot(x,p,type="l")
 }
