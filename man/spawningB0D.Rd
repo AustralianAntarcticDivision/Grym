@@ -58,5 +58,5 @@ gs <- rampOgive(ls,410,40)
 spawn <- 201:281
 
 ## Virgin spawning stock abundance
-spawningB0D(ws,gs,M*Ms,spawn)
+spawningB0D(gs,ws,M*Ms,spawn)
 }
