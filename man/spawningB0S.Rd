@@ -47,35 +47,35 @@ in which case \code{M} should be a matrix of the same size as \code{R}.
 ## Daily time steps and 7 age classes
 nsteps <- 365
 Ages <- 2:8
-Days <- seq(0,1,length=nsteps+1)
+Days <- seq(from=0,to=1,length=nsteps+1)
 h <- 1/nsteps
 
 ## Ages
-ages <- outer(Days,Ages,FUN="+")
+ages <- outer(X=Days,Y=Ages,FUN="+")
 ## Age-length and length-weight conversions
-ls <- vonBertalanffyAL(ages,t0=0.0667,K=0.5,Linf=500)
-ws <- powerLW(ls,9E-10,3.32)
+ls <- vonBertalanffyAL(A=ages,t0=0.0667,K=0.5,Linf=500)
+ws <- powerLW(L=ls, a=9E-10, b=3.32)
 
 ## Constant intra-annual natural mortality
-ms <- matrix(1,nsteps+1,length(Ages))
-ms <- ms/mean(trapz(ms,h))
-Ms <- ctrapz(ms,h)
-Msf <- final(Ms)
+ms <- matrix(data=1,nrow=nsteps+1,ncol=length(Ages))
+ms <- ms/mean(x=trapz(fs=ms,h=h))
+Ms <- ctrapz(fs=ms,h=h)
+Msf <- final(P=Ms)
 
 ## Compute model parameters that give mean R = 0.3 and var R = 0.01,
 ## when R is the proportion of recruits in the population
-ps <- prRecruitParsIB(mnR=0.2,vrR=0.01,Msf)
+ps <- prRecruitParsIB(Msf=Msf,mnR=0.2,vrR=0.01)
 ## Estimated natural mortality scaling
 ps$M
 
-R <- matrix(prRecruitsIB(10000,ps),1000,10)
+R <- matrix(data=prRecruitsIB(n=10000,ps=ps),nrow=1000,ncol=10)
 
 ## Maturity at age
-gs <- rampOgive(ls,410,40)
+gs <- rampOgive(x=ls,x50=410,xrange=40)
 
 ## Increments in the spawning period
 spawn <- 201:281
 
 ## Virgin spawning stock abundance
-spawningB0S(R,ws,gs,Ms,ps$M,spawn)
+spawningB0S(R=R,gs=gs,ws=ws,Ms=Ms,M=ps$M,spawn=spawn)
 }
