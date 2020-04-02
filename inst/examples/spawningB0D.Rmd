@@ -53,4 +53,5 @@ then the deterministic estimate of virgin spawning stock biomass is
 ```{r}
 ## Virgin spawning stock abundance
 spawningB0D(gs=gs, ws=ws, MMs=M*Ms, spawn=spawn)
+
 ```

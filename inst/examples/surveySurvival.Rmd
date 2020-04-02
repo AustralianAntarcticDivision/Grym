@@ -13,26 +13,26 @@ Define age classes and within year time steps
 ## Daily time steps and 7 age classes
 nsteps <- 365
 Ages <- 2:8
-Days <- seq(0,1,length=nsteps+1)
+Days <- seq(from=0, to=1, length=nsteps+1)
 h <- 1/nsteps
 ```
 
 Define the intra-annual natural mortality and its integral
 ```{r}
 ## Constant intra-annual natural mortality
-ms <- matrix(1,nsteps+1,length(Ages))
-ms <- ms/mean(trapz(ms,h))
-Ms <- ctrapz(ms,h)
+ms <- matrix(data=1, nrow=nsteps+1, ncol=length(x=Ages))
+ms <- ms/mean(x=trapz(fs=ms, h=h))
+Ms <- ctrapz(fs=ms, h=h)
 ```
 
-Suppose surveys are conducted in years 3, 4 and 5, starting on time
-step 190 in year 1, time step 220 in year 2 and time step 150 in year
-3, and in each case the survey lasted 12 days and all age classes were
+Suppose surveys are conducted in years 3,  4 and 5,  starting on time
+step 190 in year 1,  time step 220 in year 2 and time step 150 in year
+3,  and in each case the survey lasted 12 days and all age classes were
 surveyed.
 ```{r}
-## Survey year, period and age classes
-svy <- data.frame(yr=3:5,s1=c(190,220,150),s2=c(201,231,161))
-svy <- cbind(svy[rep(1:3,each=7),],cls=1:7)
+## Survey year,  period and age classes
+svy <- data.frame(yr=3:5, s1=c(190, 220, 150), s2=c(201, 231, 161))
+svy <- cbind(svy[rep(x=1:3, each=7), ], cls=1:7)
 head(svy)
 ```
 
@@ -50,7 +50,7 @@ The total mean survival for the cohort from the start of the year in
 which they were in the first age class to the survey period is
 ```{r}
 ## Survival to the survey period from age class 1
-surveySurvival(svy$yr,svy$cls,svy$s1,svy$s2,Ms,M)
+surveySurvival(yr=svy$yr, cls=svy$cls, s1=svy$s1, s2=svy$s2, Ms=Ms, M=M)
 ```
 
 The computed survivals can be used to project cohort abundances the
@@ -60,7 +60,7 @@ To compute the mean survival for the cohort from the start of the year
 in which they were in the third age class o the survey period
 ```{r}
 ## Survival to the survey period from age class 3
-surveySurvival(svy$yr,svy$cls,svy$s1,svy$s2,Ms,M,rcls=3)
+surveySurvival(yr=svy$yr, cls=svy$cls, s1=svy$s1, s2=svy$s2, Ms=Ms, M=M, rcls=3)
 ```
 For age classes younger than third age class at the time of survey the
 surival is greater than 1.
@@ -71,7 +71,7 @@ surival is greater than 1.
 When there is inter-annual variability in natural mortality
 ```{r}
 ## Variable mortality
-M <- rgamma(10,20,100)
+M <- rgamma(n=10, shape=20, rate=100)
 M
 ```
 
@@ -82,5 +82,5 @@ spanned by `M`.
 ```{r}
 ## Survival cannot be projected outside the period for which mortality
 ## is specified.
-surveySurvival(svy$yr,svy$cls,svy$s1,svy$s2,Ms,M)
+surveySurvival(yr=svy$yr, cls=svy$cls, s1=svy$s1, s2=svy$s2, Ms=Ms, M=M)
 ```

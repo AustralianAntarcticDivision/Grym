@@ -8,103 +8,103 @@ Define age classes and within year time steps
 ## Daily time steps and 7 age classes
 nsteps <- 365
 Ages <- 2:8
-Days <- seq(0,1,length=nsteps+1)
+Days <- seq(from=0, to=1, length=nsteps+1)
 h <- 1/nsteps
 ```
 
-Create matrices of age, length and weight for each time step and age class
+Create matrices of age,  length and weight for each time step and age class
 ```{r}
 ## Ages
-ages <- outer(Days,Ages,FUN="+")
+ages <- outer(X=Days, Y=Ages, FUN="+")
 ## Age-length and length-weight conversions
-ls <- vonBertalanffyAL(ages,t0=0.0667,K=0.5,Linf=500)
-ws <- powerLW(ls,9E-10,3.32)
+ls <- vonBertalanffyAL(A=ages, t0=0.0667, K=0.5, Linf=500)
+ws <- powerLW(L=ls, a=9E-10, b=3.32)
 ```
 
-Define the normalized intra-annual natural mortality, its integral and the annual scaling
+Define the normalized intra-annual natural mortality,  its integral and the annual scaling
 ```{r}
 ## Constant intra-annual natural mortality
-ms <- matrix(1,nsteps+1,length(Ages))
-ms <- ms/mean(trapz(ms,h))
-Ms <- ctrapz(ms,h)
-Msf <- final(Ms)
+ms <- matrix(data=1, nrow=nsteps+1, ncol=length(x=Ages))
+ms <- ms/mean(x=trapz(fs=ms, h=h))
+Ms <- ctrapz(fs=ms, h=h)
+Msf <- final(P=Ms)
 M <- 0.1
 ```
 
-Create the vector of within year distribution of fishing effort,
-assuming fishing occurs on days 80 to 119, and define a length based
+Create the vector of within year distribution of fishing effort, 
+assuming fishing occurs on days 80 to 119,  and define a length based
 selectivity
 ```{r}
 ## Normalized within year distribution of fishing effort
-fwy <- double(nsteps+1)
+fwy <- double(length=nsteps+1)
 fwy[81:220] <- 1
-fwy <- fwy/trapz(fwy,h)
+fwy <- fwy/trapz(fs=fwy, h=h)
 ## Length based selectivity
-ss <- rampOgive(ls,420,30)
+ss <- rampOgive(x=ls, x50=420, xrange=30)
 ```
 
-Define the normalized intra-annual fishing mortality, its integral and
+Define the normalized intra-annual fishing mortality,  its integral and
 the annual scaling.
 ```{r}
 ## Intra-annual fishing mortality - effort by selectivity
 fs <- fwy*ss
-Fs <- ctrapz(fs,h)
-Fsf <- final(Fs)
+Fs <- ctrapz(fs=fs, h=h)
+Fsf <- final(P=Fs)
 F <- 0.2
 ```
 
 Project forward 10 years from a virgin stock assuming constant fishing
-mortality, collating annual abundance, biomass and yield.
+mortality,  collating annual abundance,  biomass and yield.
 
 Create matrices to store annual projections
 ```{r}
 ## Ten year projection from virgin stock collating final annual
-## abundance, biomass and yield
+## abundance,  biomass and yield
 Years <- 1:10
-Nf <- Bf <- Yf <- matrix(NA,length(Years),length(Ages))
+Nf <- Bf <- Yf <- matrix(data=NA, nrow=length(x=Years), ncol=length(x=Ages))
 ```
 
 
 Compute an equilibrium age structure assuming constant natural mortality
-and no fishing, assuming no plus class and 8000 recruits per year.
+and no fishing,  assuming no plus class and 8000 recruits per year.
 ```{r}
 ## Deterministic initial age structure assuming no fishing
-N0 <- ageStructureD(M*Msf,R=8000)
+N0 <- ageStructureD(MMsf=M*Msf, R=8000)
 ```
 
-For the first year, project forward from the initial abundance assuming
-constant fishing mortality, update the the initial abundance for the
-next projection assuming 8000 new recruits, and record the final
-abundance, biomass and yield from the projection
+For the first year,  project forward from the initial abundance assuming
+constant fishing mortality,  update the the initial abundance for the
+next projection assuming 8000 new recruits,  and record the final
+abundance,  biomass and yield from the projection
 ```{r}
 ## Project first year
-pr <- project(ws,M*Ms,F*Fs,F*fs,Nref=N0,yield=1)
-N0 <- advance(pr$N,R=8000)
-Nf[1,] <- final(pr$N)
-Bf[1,] <- final(pr$B)
-Yf[1,] <- pr$Y
+pr <- project(ws=ws, MMs=M*Ms, FFs=F*Fs, Ffs=F*fs, Nref=N0, yield=1)
+N0 <- advance(N=pr$N, R=8000)
+Nf[1, ] <- final(P=pr$N)
+Bf[1, ] <- final(P=pr$B)
+Yf[1, ] <- pr$Y
 ```
 
-As the mortalities are constant from year to year, the projections for
+As the mortalities are constant from year to year,  the projections for
 the subsequent years can be computed by rescaling the initial projection
 ```{r}
 ## Compute projections for subsequent years by rescaling
 for(k in 2:nrow(Nf)) {
-  pr <- rescaleProjection(pr,Nref=N0)
-  N0 <- advance(pr$N,R=8000)
-  Nf[k,] <- final(pr$N)
-  Bf[k,] <- final(pr$B)
-  Yf[k,] <- pr$Y
+  pr <- rescaleProjection(pr=pr, Nref=N0)
+  N0 <- advance(N=pr$N, R=8000)
+  Nf[k, ] <- final(P=pr$N)
+  Bf[k, ] <- final(P=pr$B)
+  Yf[k, ] <- pr$Y
 }
 ```
 
-Plot final abundance, biomass and yield for each year by age class
-```{r,fig.show="hold"}
-## Plot annual abundance, biomass and yield
-opar <- par(mfrow=c(2,2),mar=c(5,4,2,2)+0.1)
-pal <- hcl(h=seq(15,375,length=8)[1:7],l=65,c=100)
-matplot(Years,Nf,xlab="Year",ylab="Abundance",type="l",lty=1,col=pal)
-matplot(Years,Bf,xlab="Year",ylab="Biomass",type="l",lty=1,col=pal)
-matplot(Years,Yf,xlab="Year",ylab="Yield",type="l",lty=1,col=pal)
+Plot final abundance,  biomass and yield for each year by age class
+```{r, fig.show="hold"}
+## Plot annual abundance,  biomass and yield
+opar <- par(mfrow=c(2, 2), mar=c(5, 4, 2, 2)+0.1)
+pal <- hcl(h=seq(from=15, to=375, length=8)[1:7], l=65, c=100)
+matplot(x=Years, y=Nf, xlab="Year", ylab="Abundance", type="l", lty=1, col=pal)
+matplot(x=Years, y=Bf, xlab="Year", ylab="Biomass", type="l", lty=1, col=pal)
+matplot(x=Years, y=Yf, xlab="Year", ylab="Yield", type="l", lty=1, col=pal)
 par(opar)
 ```
