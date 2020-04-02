@@ -12,26 +12,26 @@ Define age classes and within year time steps
 ## Daily time steps and 7 age classes
 nsteps <- 365
 Ages <- 2:8
-Days <- seq(0,1,length=nsteps+1)
+Days <- seq(from=0, to=1, length=nsteps+1)
 h <- 1/nsteps
 ```
 
-Create matrices of age, length and weight for each time step and age class
+Create matrices of age,  length and weight for each time step and age class
 ```{r}
 ## Ages
-ages <- outer(Days,Ages,FUN="+")
+ages <- outer(X=Days, Y=Ages, FUN="+")
 ## Age-length and length-weight conversions
-ls <- vonBertalanffyAL(ages,t0=0.0667,K=0.5,Linf=500)
-ws <- powerLW(ls,9E-10,3.32)
+ls <- vonBertalanffyAL(A=ages, t0=0.0667, K=0.5, Linf=500)
+ws <- powerLW(L=ls, a=9E-10, b=3.32)
 ```
 
-Define the intra-annual natural mortality, its integral and the annual scaling
+Define the intra-annual natural mortality,  its integral and the annual scaling
 ```{r}
 ## Constant intra-annual natural mortality
-ms <- matrix(1,nsteps+1,length(Ages))
-ms <- ms/mean(trapz(ms,h))
-Ms <- ctrapz(ms,h)
-Msf <- final(Ms)
+ms <- matrix(data=1, nrow=nsteps+1, ncol=length(x=Ages))
+ms <- ms/mean(x=trapz(fs=ms, h=h))
+Ms <- ctrapz(fs=ms, h=h)
+Msf <- final(P=Ms)
 M <- 0.128707
 ```
 
@@ -41,7 +41,7 @@ M <- 0.128707
 Determine the fraction mature at age from length at age
 ```{r}
 ## Maturity at age
-gs <- rampOgive(ls,410,40)
+gs <- rampOgive(x=ls, x50=410, xrange=40)
 ```
 
 If the spawing period is from day 200 to day 280 (time steps 201 to 281)
@@ -52,5 +52,5 @@ spawn <- 201:281
 then the deterministic estimate of virgin spawning stock biomass is
 ```{r}
 ## Virgin spawning stock abundance
-spawningB0D(ws,gs,M*Ms,spawn)
+spawningB0D(gs=gs, ws=ws, MMs=M*Ms, spawn=spawn)
 ```
