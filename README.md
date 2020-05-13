@@ -10,7 +10,8 @@ An implementation of the generalized yeild model in R.
 The package is easily installed from GitHub, using the devtools package.
 
 ``` r
-remotes::install_github("AustralianAntarcticDivision/Grym")
+Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
+remotes::install_github("AustralianAntarcticDivision/Grym", dependencies=TRUE)
 ```
 
 If you don’t have `remotes` installed already, install it first.
