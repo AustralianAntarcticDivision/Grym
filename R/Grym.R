@@ -252,7 +252,7 @@ project <- function(ws,MMs,FFs=0,Ffs=0,Nref=1,nref=1,Bref=NA,bref=nref,yield=2) 
 
   ## Rescale to match reference biomass
   if(!is.na(Bref)) {
-    r <- Bref/sum(colMeans(B[bref,,drop=F]))
+    r <- Bref/sum(trapzMeans(B[bref,,drop=F]))
     N <- r*N
     B <- r*B
   }
@@ -311,7 +311,7 @@ rescaleProjection <- function(pr,Nref=1,nref=1,Bref=NA,bref=nref) {
 
   ## Rescale to match reference biomass
   if(!is.na(Bref)) {
-    r <- Bref/sum(colMeans(B[bref,,drop=F]))
+    r <- Bref/sum(trapzMeans(B[bref,,drop=F]))
     N <- r*N
     B <- r*B
     if(!is.null(Y)) Y <- r*Y
@@ -594,9 +594,9 @@ final <- function(P) P[nrow(P),]
 ## ---- meanStock
 meanStock <- function(P,ws=1,period) {
   if(identical(ws,1))
-    sum(colMeans(P[period,,drop=FALSE]))
+    sum(trapzMeans(P[period,,drop=FALSE]))
   else
-    sum(colMeans(ws[period,,drop=FALSE]*P[period,,drop=FALSE]))
+    sum(trapzMeans(ws[period,,drop=FALSE]*P[period,,drop=FALSE]))
 }
 ## ----
 
@@ -604,7 +604,7 @@ meanStock <- function(P,ws=1,period) {
 ##' @export
 ## ---- spawningStock
 spawningStock <- function(P,gs,period) {
-  sum(colMeans((gs*P)[period,,drop=FALSE]))
+  sum(trapzMeans((gs*P)[period,,drop=FALSE]))
 }
 ## ----
 
@@ -612,7 +612,7 @@ spawningStock <- function(P,gs,period) {
 ##' @export
 ## ---- exploitableStock
 exploitableStock <- function(P,ss,period) {
-  sum(colMeans((ss*P)[period,,drop=FALSE]))
+  sum(trapzMeans((ss*P)[period,,drop=FALSE]))
 }
 ## ----
 
@@ -621,7 +621,7 @@ exploitableStock <- function(P,ss,period) {
 ## ---- vulnerableStock
 vulnerableStock <- function(P,ss,fwy,period) {
   m <- mean(fwy[period])
-  if(m==0) 0 else sum(colMeans((fwy*ss*P)[period,,drop=FALSE]))/m
+  if(m==0) 0 else sum(trapzMeans((fwy*ss*P)[period,,drop=FALSE]))/m
 }
 ## ----
 
@@ -697,7 +697,7 @@ spawningB0S <- function(R,gs,ws,Ms,M,spawn,plus=FALSE) {
     ## Constant M - project once and compute spawning biomass by
     ## rescaling by random age structures.  This could be optimized further.
     pr <- project(ws,M*Ms)
-    bs <- colMeans(gs*pr$B[spawn,,drop=FALSE])
+    bs <- trapzMeans(gs*pr$B[spawn,,drop=FALSE])
     S <- exp(-M*Msf)
     S <- cumprod(c(1,S[-length(Msf)],rep(if(plus) S[length(Msf)] else 0,ncol(R)-length(Msf))))
     for(k in 1:nrow(R)) {
@@ -713,7 +713,7 @@ spawningB0S <- function(R,gs,ws,Ms,M,spawn,plus=FALSE) {
     for(k in 1:nrow(R)) {
       N0 <- ageStructureS(R[k,],Msf,M[k,],plus=plus)
       pr <- project(ws,M[k,ncol(R)]*Ms,Nref=N0)
-      SB0[k] <- sum(colMeans(gs*pr$B[spawn,,drop=FALSE]))
+      SB0[k] <- sum(trapzMeans(gs*pr$B[spawn,,drop=FALSE]))
     }
   }
 
