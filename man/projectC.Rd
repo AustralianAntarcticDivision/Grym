@@ -152,7 +152,8 @@ par(opar)
 ## biomass estimated from a five day mid-year survey (days 150 to 154)
 Nsurvey <- c(1.0, 0.67, 0.46, 0.33, 0.25, 0.18, 0.13) 
 Bsurvey <- 15000
-pr <- projectC(ws=ws, MMs=M*Ms, Fs=Fs, fs=fs, Catch=1954.908, Nref=Nsurvey, nref=151:155, Bref=Bsurvey, yield=2)
+pr <- projectC(ws=ws, MMs=M*Ms, Fs=Fs, fs=fs, Catch=1954.908, Nref=Nsurvey, 
+               nref=151:155, Bref=Bsurvey, yield=2)
 
 ## Fishing mortality and total annual yield
 pr$F

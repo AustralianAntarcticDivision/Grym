@@ -63,7 +63,8 @@ M <- 0.2
 ageStructureS(R=rlnorm(n=8, meanlog=log(x=10), sdlog=0.2), Msf=Msf, M=M)
 
 ## Plot 100 replicates
-Rs <- replicate(n=100, expr=ageStructureS(R=rlnorm(n=8, meanlog=log(x=10), sdlog=0.2), Msf=Msf, M=M))
+Rs <- replicate(n=100, 
+                expr=ageStructureS(R=rlnorm(n=8, meanlog=log(x=10), sdlog=0.2), Msf=Msf, M=M))
 matplot(x=Rs,type="l", lty=1, col=rgb(0,0,0,0.1), xlab="Age", ylab="Abundance")
 lines(x=ageStructureD(MMsf=M*Msf, R=exp(x=log(x=10)+0.1^2/2)), col="firebrick")
 

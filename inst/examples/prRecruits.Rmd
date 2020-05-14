@@ -95,7 +95,8 @@ The random recruits have a scaled inverse Beta distribution
 ```{r}
 ## Histogram of simulated recruitments
 rs <- prRecruitsIB(n=100000, ps=ps, mnA=100)
-hist(x=rs[rs < 350], breaks=seq(from=0, to=350, by=5), freq=FALSE, xlab="Recruits", main="Inverse Beta")
+hist(x=rs[rs < 350], breaks=seq(from=0, to=350, by=5), freq=FALSE, 
+     xlab="Recruits", main="Inverse Beta")
 ```
 
 
@@ -190,7 +191,8 @@ The random recruits have a scaled Gamma distribution
 ```{r}
 ## Histogram of simulated recruitments
 rs <- prRecruitsG(100000, ps, mnA=100)
-hist(x=rs[rs < 350], breaks=seq(from=0, to=350, by=5), freq=FALSE, xlab="Recruits", main="Gamma")
+hist(x=rs[rs < 350], breaks=seq(from=0, to=350, by=5), freq=FALSE, 
+     xlab="Recruits", main="Gamma")
 ```
 
 Repeat for the case where R is the proportion of individuals in age
@@ -284,7 +286,8 @@ The random recruits have a scaled log Normal distribution
 ```{r}
 ## Histogram of simulated recruitments
 rs <- prRecruitsLN(n=100000, ps=ps, mnA=100)
-hist(x=rs[rs < 350], breaks=seq(from=0, to=350, by=5), freq=FALSE, xlab="Recruits", main="Log Normal")
+hist(x=rs[rs < 350], breaks=seq(from=0, to=350, by=5), freq=FALSE, 
+     xlab="Recruits", main="Log Normal")
 ```
 
 
@@ -383,7 +386,8 @@ The random non-zero recruitment events have a scaled Inverse Beta distribution
 ```{r}
 ## Histogram of simulated recruitments
 rs <- prRecruitsDIB(n=100000, ps=ps, mnA=100)
-hist(x=rs[rs >0 & rs < 600], breaks=seq(from=0, to=600, by=5), freq=FALSE, xlab="Recruits", main="Delta Inverse Beta")
+hist(x=rs[rs >0 & rs < 600], breaks=seq(from=0, to=600, by=5), freq=FALSE, 
+     xlab="Recruits", main="Delta Inverse Beta")
 ```
 
 But there are many zero recruitment events
@@ -488,7 +492,8 @@ The non-zero recruits have a scaled Gamma distribution
 ```{r}
 ## Histogram of simulated recruitments
 rs <- prRecruitsDG(n=100000, ps=ps, mnA=100)
-hist(x=rs[rs >0 & rs < 600], breaks=seq(from=0, to=600, by=5), freq=FALSE, xlab="Recruits", main="Delta Gamma")
+hist(x=rs[rs >0 & rs < 600], breaks=seq(from=0, to=600, by=5), freq=FALSE, 
+     xlab="Recruits", main="Delta Gamma")
 ```
 
 But there are many zero recruitment events
@@ -592,7 +597,8 @@ The non-zero recruits have a scaled Log Normal distribution
 ```{r}
 ## Histogram of simulated recruitments
 rs <- prRecruitsDLN(n=100000, ps=ps, mnA=100)
-hist(x=rs[rs >0 & rs < 600], breaks=seq(from=0, to=600, by=5), freq=FALSE, xlab="Recruits", main="Delta Log Normal")
+hist(x=rs[rs >0 & rs < 600], breaks=seq(from=0, to=600, by=5), freq=FALSE, 
+     xlab="Recruits", main="Delta Log Normal")
 ```
 
 But there are many zero recruitment events

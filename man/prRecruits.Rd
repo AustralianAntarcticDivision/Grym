@@ -271,7 +271,8 @@ var(R)
 
 ## Histogram of simulated recruitments
 rs <- prRecruitsIB(n=100000, ps=ps, mnA=100)
-hist(x=rs[rs < 350], breaks=seq(from=0, to=350, by=5), freq=FALSE, xlab="Recruits", main="Inverse Beta")
+hist(x=rs[rs < 350], breaks=seq(from=0, to=350, by=5), freq=FALSE, 
+     xlab="Recruits", main="Inverse Beta")
 
 ## Compute model parameters that give mean R = 0.3 and var R = 0.01, 
 ## where R is the proportion of individual in age class 3 as a fraction
@@ -324,7 +325,8 @@ var(x=R)
 
 ## Histogram of simulated recruitments
 rs <- prRecruitsG(100000, ps, mnA=100)
-hist(x=rs[rs < 350], breaks=seq(from=0, to=350, by=5), freq=FALSE, xlab="Recruits", main="Gamma")
+hist(x=rs[rs < 350], breaks=seq(from=0, to=350, by=5), freq=FALSE, 
+     xlab="Recruits", main="Gamma")
 
 ## Compute model parameters that give mean R = 0.3 and var R = 0.01, 
 ## where R is the proportion of individual in age class 3 as a fraction
@@ -377,7 +379,8 @@ var(x=R)
 
 ## Histogram of simulated recruitments
 rs <- prRecruitsLN(n=100000, ps=ps, mnA=100)
-hist(x=rs[rs < 350], breaks=seq(from=0, to=350, by=5), freq=FALSE, xlab="Recruits", main="Log Normal")
+hist(x=rs[rs < 350], breaks=seq(from=0, to=350, by=5), freq=FALSE, 
+     xlab="Recruits", main="Log Normal")
 
 ## Compute model parameters that give mean R = 0.3 and var R = 0.01, 
 ## where R is the proportion of individual in age class 3 as a fraction
@@ -431,7 +434,8 @@ var(x=R, na.rm=TRUE)
 
 ## Histogram of simulated recruitments
 rs <- prRecruitsDIB(n=100000, ps=ps, mnA=100)
-hist(x=rs[rs >0 & rs < 600], breaks=seq(from=0, to=600, by=5), freq=FALSE, xlab="Recruits", main="Delta Inverse Beta")
+hist(x=rs[rs >0 & rs < 600], breaks=seq(from=0, to=600, by=5), freq=FALSE, 
+     xlab="Recruits", main="Delta Inverse Beta")
 
 ## Fraction of zero recruitments
 mean(x=rs==0)
@@ -489,7 +493,8 @@ var(x=R, na.rm=TRUE)
 
 ## Histogram of simulated recruitments
 rs <- prRecruitsDG(n=100000, ps=ps, mnA=100)
-hist(x=rs[rs >0 & rs < 600], breaks=seq(from=0, to=600, by=5), freq=FALSE, xlab="Recruits", main="Delta Gamma")
+hist(x=rs[rs >0 & rs < 600], breaks=seq(from=0, to=600, by=5), freq=FALSE, 
+     xlab="Recruits", main="Delta Gamma")
 
 ## Fraction of zero recruitments
 mean(x=rs==0)
@@ -547,7 +552,8 @@ var(x=R, na.rm=TRUE)
 
 ## Histogram of simulated recruitments
 rs <- prRecruitsDLN(n=100000, ps=ps, mnA=100)
-hist(x=rs[rs >0 & rs < 600], breaks=seq(from=0, to=600, by=5), freq=FALSE, xlab="Recruits", main="Delta Log Normal")
+hist(x=rs[rs >0 & rs < 600], breaks=seq(from=0, to=600, by=5), freq=FALSE, 
+     xlab="Recruits", main="Delta Log Normal")
 
 ## Fraction of zero recruitments
 mean(x=rs==0)

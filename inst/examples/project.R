@@ -55,7 +55,8 @@ par(opar)
 ## biomass estimated from a five day mid-year survey (days 150 to 154)
 Nsurvey <- c(1.0,0.67,0.46,0.33,0.25,0.18,0.13) 
 Bsurvey <- 15000 
-pr <- project(ws=ws, MMs=M*Ms, FFs=F*Fs, Ffs=F*fs, Nref=Nsurvey, nref=151:155, Bref=Bsurvey, yield=2)
+pr <- project(ws=ws, MMs=M*Ms, FFs=F*Fs, Ffs=F*fs, Nref=Nsurvey, 
+              nref=151:155, Bref=Bsurvey, yield=2)
 
 ## Total annual yield
 sum(pr$Y[nsteps+1,])
