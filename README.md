@@ -42,7 +42,9 @@ Grym does not otherwise require `remotes` for normal use.
 <!-- badges: end -->
 
 The goal of Grym is to have provide an R based implementation of the
-Generalised Yield Model Constable and de la Mare (1996).
+Generalised Yield Model by Constable and de la Mare (1996). This package
+provides specific functions which users can use in combination to build
+their own projection functions and packages.
 
 ## Example
 
