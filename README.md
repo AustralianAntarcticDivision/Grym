@@ -3,15 +3,19 @@
 
 # Grym
 
-An implementation of the generalized yeild model in R.
+An implementation of the generalized yeild model in R. This
+implementation is still considered a work in progress up until the paper
+of comparisons has been submitted to WG-SAM-2020.
+
+Once accepted by CCAMLR the accepted version of the Grym Package will be
+hosted as a fork on the CCAMLR github account.
 
 ## Installing
 
-The package is easily installed from GitHub, using the devtools package.
+The package is easily installed from GitHub, using the remotes package.
 
 ``` r
-Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
-remotes::install_github("AustralianAntarcticDivision/Grym", dependencies=TRUE)
+remotes::install_github("AustralianAntarcticDivision/Grym")
 ```
 
 If you don’t have `remotes` installed already, install it first.
@@ -20,9 +24,15 @@ If you don’t have `remotes` installed already, install it first.
 install.packages("remotes")
 ```
 
-Grym does not otherwise require remotes for normal use.
+Grym does not otherwise require `remotes` for normal use.
 
 ## TODO
+
+  - Parametric bootstrap from a vector of recruits
+
+  - Check examples for consistency of implementation
+
+  - Build GrymExamples
 
 # Grym
 
@@ -35,9 +45,5 @@ Generalised Yield Model @GYM96
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(Grym)
-## basic example code
-```
+Grym is accompanied by the GrymExamples package which provides examples
+of implementation for a number of species within the CCAMLR region.
