@@ -9,6 +9,7 @@ editor_options:
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 # Grym
 
+
 An implementation of the generalized yield model (Constable and de la Mare, 1996) in R. This implementation is still considered a work in progress up until the paper of comparisons has been submitted to WG-SAM-2020. 
 
 Once accepted by CCAMLR the accepted version of the Grym Package will be hosted as a fork on the CCAMLR github account.  
