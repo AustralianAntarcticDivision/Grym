@@ -37,9 +37,9 @@ The core functionality of the GYM is to project stock abundance, biomass and yie
 forward in time over a single year.
 
 The GYM projects stock abundance, biomass and yield forward over time by integrating a system of
-differential equations with an adpative Runge-Kutta scheme. The GYM assumes the number \(N_{a,y}\),
+differential equations with an adaptive Runge-Kutta scheme. The GYM assumes the number \(N_{a,y}\),
 biomass \(B_{a,y}\) and yield \(Y_{a,y}\) of individuals of age \(a\) in year \(y\) satisfy the
-sytem of differential equations (@GYM96)
+system of differential equations (@GYM96)
 \[
 \begin{align}
 \frac{dN_{a,y}}{dt} &= - \Big [ M_{y} m(a,t,y)  + F_{y} f(a,t,y) \Big ] N_{a,y}\\
@@ -109,7 +109,7 @@ at the beginning of time step `i`;
 * `ss` is an annual matrix of fishing selectivity, so that `ss[i,j]` is the fraction of individuals
   susceptable to fishing in age `j` at the beginning of time step `i`.
 
-The precise form of the functional relationships between these quantities is esentially arbitrary
+The precise form of the functional relationships between these quantities is essentially arbitrary
 and may vary from year to year and replicate to replicate, provided that the first and last rows
 remain consistent across years.  Only the weights `ws`, maturity `gs` and fishing selectivity `ss`
 matrices are required to compute an annual projection, the lengths `ls` and ages `as` are a useful
@@ -117,7 +117,7 @@ convenience.
 
 The natural and fishing mortalities are decomposed into the intra-annual components \(m(a,t,y)\) and
 \(f(a,t,y)\), and annual scalings \(M_{y}\) and \(F_{y}\) for that year.  For a projection over a
-single year, \(M_{y}\) and \(F_{y}\) are just constants, and the intra-annaul components are stored
+single year, \(M_{y}\) and \(F_{y}\) are just constants, and the intra-annual components are stored
 as annual matrices:
 
 * `ms` is an annual matrix of the intra-annual component of natural mortality \(m(a,t,y)\);
@@ -156,7 +156,7 @@ M_{y} \int_{y}^{y+t} m(a,\tau,y) d \tau
 \qquad \text{and} \qquad
 F_{y} \int_{y}^{y+t} f(a,\tau,y) d \tau 
 \] 
-aand are provided as
+and are provided as
 
 * `MMs` is an annual matrix of the scaled integrated natural mortality;
 * `FFs` is an annual matrix of the scaled integrated fishing mortality.
@@ -187,7 +187,7 @@ the integral \(\int_{x_{1}}^{x_{n}} f(\tau) d\tau\) can be approximated by the c
 \[
 \int_{x_{1}}^{x_{n}} f(\tau) d\tau = \frac{h}{2}f(x_{1}) + h \sum_{k=2}^{n-1} f(x_{k}) + \frac{h}{2} f(x_{n})
 \]
-The `trapz` function implements the composite trapzoidal rule.  Given a vector `fs` of function
+The `trapz` function implements the composite trapezoidal rule.  Given a vector `fs` of function
 values \(f(x_{k})\), `trapz` returns the trapezoidal approximation to \(\int_{x_{1}}^{x_{n}} f(\tau)
 d\tau\). If `fs` is a matrix, then each column is assumed to represent a different integrand
 \(f(x)\), and `trapz` returns acts on the columns to return a vector of approximate integrals.
@@ -264,7 +264,7 @@ of individuals in each age class are known at some other reference time (for exa
 survey), it suffices to integrate as before but adjust the scaling to reproduce the known abundance
 at the reference time.  In some instances only relative cohort abundances are known at some reference
 time, but total biomass is known at some (possibly different) reference time and projections should
-be scaled to reproduce both the relative abindance and the known total biomass.  In essence this
+be scaled to reproduce both the relative abundance and the known total biomass.  In essence this
 back-projects the reference abundance or biomass to the start of the year.
 
 The computation of yield is relatively expensive and is not always required, and so the `yield` flag
@@ -280,15 +280,15 @@ Given
 * `nref` - vector of time steps for which the reference abundance is known
 * `Bref` - reference biomass 
 * `bref` - vector of time steps for which the reference biomass is known
-* `yield` - if `yield=1` only calculate yeild for the final time step, if `yield=2`
-  calculate yield for all time steps, otherwise yield is not caclulated at all
+* `yield` - if `yield=1` only calculate yield for the final time step, if `yield=2`
+  calculate yield for all time steps, otherwise yield is not calculated at all
 
 the `project` function computes annual matrices of projected abundance `N`, biomass `B` and yield `Y`. 
 ```{r}
 <<project>>
 ```
 
-Given the assumptions of the model, the compuation of `N` and `B` are exact, but the trapezoidal
+Given the assumptions of the model, the computation of `N` and `B` are exact, but the trapezoidal
 approximation for `Y` will only be accurate if the total mortality in each time step is small.
 
 
@@ -297,7 +297,7 @@ approximation for `Y` will only be accurate if the total mortality in each time 
 In some cases the annual scaling of fishing mortality \(F_{y}\) is unknown, and must be chosen to
 reproduce a given target yield.
 
-The `projectC` function harnesses `project` in conjuction with the univariate root finder `uniroot` to
+The `projectC` function harnesses `project` in conjunction with the univariate root finder `uniroot` to
 determine the scaling of fishing mortality \(F_{y}\) that reproduces an observed catch, and then
 projects forward for that scaling.  If the target catch cannot be recovered without exceeding `Fmax`,
 the projection is performed with `F` capped at `Fmax`.  No warning is issued and it is the
@@ -314,8 +314,8 @@ Given
 * `nref` - vector of time steps for which the reference abundance is known
 * `Bref` - reference biomass 
 * `bref` - vector of time steps for which the reference biomass is known
-* `yield` - if `yield=1` only calculate yeild for the final time step, if `yield=2`
-  calculate yield for all time steps, otherwise yield is not caclulated at all
+* `yield` - if `yield=1` only calculate yield for the final time step, if `yield=2`
+  calculate yield for all time steps, otherwise yield is not calculated at all
 * `Fmax` - the maximum `F` to allow in the search
 * `tol` - the precision to which to reproduce the observed catch
 
@@ -353,7 +353,7 @@ initial projection and repeatedly rescale than to continually reproject.
 
 Given
 
-* `pr` - an exsiting projection
+* `pr` - an existing projection
 * `Nref` - vector of reference abundances for each age class
 * `nref` - vector of time steps for which the reference abundance is known
 * `Bref` - reference biomass 
@@ -369,7 +369,7 @@ the `rescaleProjection` rescales the projection to match the prescribed referenc
 
 ## Size and Maturity
 
-Grym require matrices that map age at each time step to weight, maturity or selectivity.  In
+Grym requires matrices that map age at each time step to weight, maturity or selectivity.  In
 principle these mappings are arbitrary and the user is free to specify these as they choose.  For
 convenience, Grym implements a small number of common models for translating between age, length,
 weight and maturity, using the same parameterizations as used in the original GYM.
@@ -385,7 +385,7 @@ year
 <<vonBertalanffyRAL>>
 ```
 
-Length-weight replationships are often modelled as a power law
+Length-weight relationships are often modelled as a power law
 ```{r,eval=FALSE}
 <<powerLW>>
 ```
@@ -436,7 +436,7 @@ the `ageStructureD` function returns the corresponding vector of equilibrium abu
 ### Stochastic Age Structure
 
 To stochastically determine an initial age structure it suffices to project forward for at least as
-many years as there are age classes with non neglible numbers (including age classes
+many years as there are age classes with non negligible numbers (including age classes
 aggregated into the plus group).
 
 This routine optimizes for when there is no inter-annual variability in the natural and fishing
@@ -513,7 +513,7 @@ or biomass
 
 
 
-### Deterministic Virgin Spawning Bomass
+### Deterministic Virgin Spawning Biomass
 
 A deterministic estimate of the virgin spawning biomass is obtained by deterministically computing
 the initial age structure and projecting forward to determine the spawning stock biomass.
@@ -532,7 +532,7 @@ the `ageStructureD` function returns the corresponding vector of equilibrium abu
 ```
 
 
-### Stochastic Virgin Spawning Bomass
+### Stochastic Virgin Spawning Biomass
 
 A stochastic estimate of the virgin spawning biomass is obtained by repeatedly simulating an initial
 age structure and projecting forward to simulate a spawning stock biomass.  The median, mean and
@@ -542,7 +542,7 @@ Given
 
 * `R` - matrix or yearly recruitment numbers
 * `gs` - matrix of fraction mature at age
-* `Ms` - marix of unscaled integrated natural mortalities 
+* `Ms` - matrix of unscaled integrated natural mortalities 
 * `M` - vector of annual natural mortalities
 * `spawn` - the time steps corresponding to the spawning period
 * `plus` - whether the final class is a "plus" class
@@ -908,13 +908,13 @@ the `prBootstrap` function generates new values for the mean and variance of \(R
 
 ## Survival to survey period
 
-The `surveySurvival` function determines the total surival from recruitment to a nominated survey
+The `surveySurvival` function determines the total survival from recruitment to a nominated survey
 period.  This can be used to backproject age specific abundance survey data to estimate annual
 recruitments.
 
 When there is inter-annual variability in natural or fishing mortality, the annual mortality
 scalings (`M` and/or `F`) are specified as vectors, and it is assumed that survey years are labelled
-so that `yr==1` corresponds to the year of the first elemnt of `M` or `F`.  Survival cannot be
+so that `yr==1` corresponds to the year of the first element of `M` or `F`.  Survival cannot be
 computed for cohorts recruited before year 1.
 
 When there is no inter-annual variability in natural or fishing mortality and the vectors `M` and
@@ -951,7 +951,7 @@ of variation*.
 
 Given 
 
-* `survey.df` a dataframe of surved abundance (see details)
+* `survey.df` a dataframe of surveyed abundance (see details)
 * `Ms` matrix of unscaled integrated natural mortality
 * `M` vector of annual natural mortalities
 * `rcls` the reference age class to adjust to
@@ -990,32 +990,22 @@ possible.  In large part this has been done by requiring the user to precompute 
 natural and fishing mortality that are likely to remain constant across projections.
 
 But the cost of this strategy is that it complicates the argument lists of the functions, and
-similar functions can expect sublty different arguments, which is likely to lead to programming
+similar functions can expect subtly different arguments, which is likely to lead to programming
 errors. It may be better to unify the argument lists across functions a little more at the cost of
 recomputing some expressions that are not too expensive to compute.
 
 
 #### Normalization
 
-The GYM standardises the natural and fishing mortalities according to specific rules, but it is not
+The GYM standardizes the natural and fishing mortalities according to specific rules, but it is not
 clear that these rules are consistent if the fishing season is allowed to change inter-annually.  In
-Grym, we have not formalized the standardizaiton in any way, we have left it up to the programmer
+Grym, we have not formalized the standardization in any way, we have left it up to the programmer
 to standardize as they see fit.
-
-#### Averages 
-
-
-Arguably, the `mean` in `project` that computes the average over the reference interval should be an
-integral over the interval computed with `trapz` rather than a simple mean.  Similar arguments apply
-to the calculation of stock averages such as spawning biomass and vulnerable biomass.
-
-This would break consistency with the GYM, but be more internally consistent.
-
 
 #### Runge Kutta
 
 In the GYM projection is based on integrating a set of ODE's with a Runge-Kutta procedure, but the
-implmentation seems oddly inaccurate.  For example - when calculating median SB0, the GYM projects 
+implementation seems oddly inaccurate.  For example - when calculating median SB0, the GYM projects 
 forward with unit abundance in each age class with no fishing mortality. Even though mortalities and 
 initial abundances are identical, inspection with a single step debugger shows the Runge-Kutta produces
 projected abundances that differ cross age groups in the fifth or sixth significant figure.  A Runge-Kutta
@@ -1028,7 +1018,7 @@ In some functions Grym treats age as potentially unlimited so that the plus clas
 potentially infinitely many age classes.  But in others Grym treats the plus class as containing
 only finitely many ages and the user must specify how many "additional" age classes reside in the
 plus class essentially placing an upper limit on the age of an individual. The two sets of functions 
-can be distinguished by whether the `plus` argument is bolean (infinite age) or integer (finite age).
+can be distinguished by whether the `plus` argument is Boolean (infinite age) or integer (finite age).
 
 In one sense this is not really a problem in that the number of additional age classes can be set
 arbitrarily large (at the cost of computational effort), but it would be better if there were more
@@ -1069,7 +1059,7 @@ between utility and efficiency.
 The proportional recruitment model used within the GYM is in itself workable, although Grym offers
 more general alternatives with better bias correction.
 
-But the process for resampling the mena and variance of \(R\) proposed in @DLMrecruit94 is not
+But the process for resampling the mean and variance of \(R\) proposed in @DLMrecruit94 is not
 reasonable and leads to impossible variances.  Grym proposes a parametric bootstrap alternative,
 but as with all bootstrap approaches it is like to underestimate variability, and there may be
 better alternatives.
@@ -1081,15 +1071,15 @@ to be taken when writing projection code.
 
 Commonly we wish to project forward over several years and collate annual summaries.  But if we
 preallocate a dataframe to store the summaries, then repeatedly project forward writing annual
-summary to the appropriate row of the dataframe, R performs an unnecessary copy fo teh data frame
+summary to the appropriate row of the dataframe, R performs an unnecessary copy of the data frame
 each time a row is written.  If instead we allocate vectors for each separate summary quantity, and
 then bind these together as a dataframe when the projection is complete, the level of copying is
-vastly reduced.  There is a helpful disccusion on this [blog](https://www.brodieg.com/2019/02/18/an-unofficial-reference-for-internal-inspect/)
+vastly reduced.  There is a helpful discussion on this [blog](https://www.brodieg.com/2019/02/18/an-unofficial-reference-for-internal-inspect/)
 
 As a general rule, it is more efficient to 
 
 * store results to vectors that are then bound together to form a dataframe rather than allocate
-  dataframes and write inidividual results to that dataframe, and
+  dataframes and write individual results to that dataframe, and
 
 * create many small dataframes that summarize a small number of projections, and bind these together
   to create the final result.
