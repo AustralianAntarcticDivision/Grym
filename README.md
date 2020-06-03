@@ -5,18 +5,16 @@
 
 An implementation of the generalized yield model (Constable and de la
 Mare, 1996) in R. This implementation is still considered a work in
-progress up until the paper of comparisons has been submitted to
-WG-SAM-2020.
+progress up until it has been endorced by the Scientific Committee.
 
-Once accepted by CCAMLR the accepted version of the Grym Package will be
-hosted as a fork on the CCAMLR github account.
-
-## Installing
+Once accepted by CCAMLR the accepted version of the Grym Packahosted as
+a fork on the CCAMLR github account.  
+ge will be \#\# Installing
 
 The package is easily installed from GitHub, using the remotes package.
 
 ``` r
-remotes::install_github("AustralianAntarcticDivision/Grym")
+remotes::install_github("AustralianAntarcticDivision/Grym", build_vignettes=TRUE)
 ```
 
 If you don’t have `remotes` installed already, install it first.
@@ -48,8 +46,24 @@ their own projection functions and packages.
 
 ## Example
 
-Grym is accompanied by the GrymExamples package which provides examples
-of implementation for a number of species within the CCAMLR region.
+Grym is accompanied by the GrymExamples package which provides vignettes
+of examples of implementation for a number of species within the CCAMLR
+region. The GrymExamples package can be found here:
+github.com/AustralianAntarcticDivision/GrymExamples
+
+Unless otherwise stated all examples are works in progress. A list of
+examples can be accessed with the following code:
+
+``` r
+vignette(package="GrymExamples")
+```
+
+Specific examples can be accessed with the same function and specifying
+the topic for example
+
+``` r
+vignette(topic = "Icefish_2019", package="GrymExamples")
+```
 
 ## References
 

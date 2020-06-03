@@ -2,8 +2,8 @@ Package: Grym
 Title: R implementation of the Generalized Yield Model
 Version: 0.1.0.9000
 Authors@R: c(
-    person(given = "Simon", family = "Wotherspoon", ,  email = "Simon.Wotherspoon@utas.edu.au", role = "aut"),
     person(given = "Dale", family = "Maschette", ,  email = "Dale.Maschette@utas.edu.au", role = c("aut", "cre")),
+    person(given = "Simon", family = "Wotherspoon", ,  email = "Simon.Wotherspoon@utas.edu.au", role = "aut"),
     person(given = "Cassandra", family = "Pavez", , email = "Cassandra.Pavez@utas.edu.au", role = "ctb"))
 Description: Grym is an R implementation of the Generalized Yield Model (GYM),
     a flexible model for fish stock projection (Constable and de la Mare 1996).
