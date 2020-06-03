@@ -62,7 +62,7 @@ Specific examples can be accessed with the same function and specifying
 the topic for example
 
 ``` r
-vignette(topic = "Icefish_2019", package="GrymExamples")
+vignette(topic = "Icefish", package="GrymExamples")
 ```
 
 ## References
