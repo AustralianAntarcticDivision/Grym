@@ -1,6 +1,6 @@
 Package: Grym
 Title: R implementation of the Generalized Yield Model
-Version: 0.1.0.9000
+Version: 0.1.1
 Authors@R: c(
     person(given = "Dale", family = "Maschette", ,  email = "Dale.Maschette@utas.edu.au", role = c("aut", "cre")),
     person(given = "Simon", family = "Wotherspoon", ,  email = "Simon.Wotherspoon@utas.edu.au", role = "aut"),
