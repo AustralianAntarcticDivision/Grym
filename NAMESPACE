@@ -3,6 +3,7 @@
 export(advance)
 export(ageStructureD)
 export(ageStructureS)
+export(check_dates)
 export(ctrapz)
 export(exploitableStock)
 export(final)
