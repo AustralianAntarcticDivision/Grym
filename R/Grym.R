@@ -252,7 +252,7 @@ project <- function(ws,MMs,FFs=0,Ffs=0,Nref=1,nref=1,Bref=NA,bref=nref,yield=2) 
 
   ## Rescale to match reference biomass
   if(!is.na(Bref)) {
-    r <- Bref/sum(trapzMeans(B[bref,,drop=F]))
+    r <- Bref/sum(trapzMeans(B[bref,,drop=FALSE]))
     N <- r*N
     B <- r*B
   }
@@ -311,7 +311,7 @@ rescaleProjection <- function(pr,Nref=1,nref=1,Bref=NA,bref=nref) {
 
   ## Rescale to match reference biomass
   if(!is.na(Bref)) {
-    r <- Bref/sum(trapzMeans(B[bref,,drop=F]))
+    r <- Bref/sum(trapzMeans(B[bref,,drop=FALSE]))
     N <- r*N
     B <- r*B
     if(!is.null(Y)) Y <- r*Y
