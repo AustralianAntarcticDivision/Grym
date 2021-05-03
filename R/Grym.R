@@ -42,7 +42,8 @@ vonBertalanffyLA <- function(L,t0,K,Linf) {
 ## ---- vonBertalanffyRAL
 vonBertalanffyRAL <- function(A,t0,K,Linf,f0=0,f1=1) {
   ## Remap interval of growth to the full year
-  A <- A%/%1 + pmin(1,pmax(0,(A%%1-f0)/(f1-f0)))
+  A <- (A-f0)%/%1 + pmin(1,pmax(0,((A-f0)%%1)/(f1-f0)))
+  A[A<0] <- 0
   vonBertalanffyAL(A,t0,K,Linf)
 }
 ## ----
@@ -51,7 +52,8 @@ vonBertalanffyRAL <- function(A,t0,K,Linf,f0=0,f1=1) {
 ##' @export
 ## ---- vonBertalanffyRLA
 vonBertalanffyRLA <- function(L,t0,K,Linf,f0=0,f1=1) {
-  f0+(f1-f0)*vonBertalanffyLA(L,t0,K,Linf)
+  A <- vonBertalanffyLA(L,t0,K,Linf)
+  A%/%1 +(f1-f0)*A%%1+f0
 }
 ## ----
 

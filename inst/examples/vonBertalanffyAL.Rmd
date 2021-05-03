@@ -49,7 +49,7 @@ ls <- vonBertalanffyAL(A=ages, t0=0.0667, K=0.5, Linf=500)
 matplot(x=Days, y=ls, type="l", lty=1, xlab="Day", ylab="Length", main="Length at Age")
 ```
 
-The restriced model assumes that growth is restricted to some fraction
+The restricted model assumes that growth is restricted to some fraction
 of the year 
 ```{r}
 ## Age-length conversion - growth occurs in middle of the year

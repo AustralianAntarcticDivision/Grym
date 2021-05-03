@@ -16,7 +16,7 @@ When inc_2 is an increment number \code{check_dates} returns the date that incre
 }
 \description{
 \lifecycle{experimental}
-#' In order to check the dates when using 365 increments in a Grym simulation this function helps translate the dates into increments or the other way around. The function will warn you if either of the dates fall in a leap year and the increment number or date may be out by 1. If this occurs, recommend changing the years to get correct increment numbers.
+In order to check the dates when using 365 increments in a Grym simulation this function helps translate the dates into increments or the other way around. The function will warn you if either of the dates fall in a leap year and the increment number or date may be out by 1. If this occurs, recommend changing the years to get correct increment numbers.
 }
 \examples{
 check_dates(inc_1="2018-12-01", inc_2="2019-01-21")
