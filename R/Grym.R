@@ -134,10 +134,17 @@ rampOgive <- function(x,x50,xrange) {
 ##' @export
 ## ---- trapz
 trapz <- function(fs,h=1) {
-  if(is.matrix(fs))
-    h*(colSums(fs)-(fs[1,]+fs[nrow(fs),])/2)
-  else
+  if(is.array(fs)) {
+    dm <- dim(fs)
+    if(length(dm)==2) {
+      h*(colSums(fs)-(fs[1,]+fs[nrow(fs),])/2)
+    } else {
+      fs <- matrix(fs,dm[1],length(fs)/dm[1])
+      array(h*(colSums(fs)-(fs[1,]+fs[nrow(fs),])/2),dm[-1])
+    }
+  } else {
     h*(sum(fs)-(fs[1]+fs[length(fs)])/2)
+  }
 }
 ## ----
 
@@ -146,14 +153,16 @@ trapz <- function(fs,h=1) {
 ##' @export
 ## ---- ctrapz
 ctrapz <- function(fs,h=1) {
-  if(is.matrix(fs)) {
-    Fs <- matrix(0,nrow(fs),ncol(fs))
-    for(j in seq_len(ncol(fs)))
-        Fs[-1,j] <- cumsum((h/2)*(fs[-1,j]+fs[-nrow(fs),j]))
+  if(is.array(fs)) {
+    dm <- dim(fs)
+    Fs <- matrix(fs,dm[1],length(fs)/dm[1])
+    for(j in seq_len(ncol(Fs)))
+      Fs[-1,j] <- cumsum((h/2)*(Fs[-1,j]+Fs[-nrow(Fs),j]))
+    Fs[1,] <- 0
+    array(Fs,dm)
   } else {
-    Fs <- c(0,cumsum((h/2)*(fs[-1]+fs[-length(fs)])))
+    c(0,cumsum((h/2)*(fs[-1]+fs[-length(fs)])))
   }
-  Fs
 }
 ## ----
 
@@ -186,6 +195,27 @@ trapzMeans <- function(fs) {
 ## ----
 
 
+
+##' Scale a 3D array along its third dimension.
+##'
+##' A convenience function that scales a 3D array along its third
+##' dimension, optionally summing along the third dimension.
+##'
+##' @title Scaling a 3D array
+##' @param A a 3D array
+##' @param b vector of scaling factors
+##' @param sum sum result along third dimension
+##' @return the scaled array.
+##' @export
+## ---- scale3
+scale3 <- function(A,b,sum=FALSE) {
+  dm <- dim(A)
+  if(sum)
+    `dim<-`(`dim<-`(A,c(dm[1]*dm[2],dm[3]))%*%b,dm[1:2])
+  else
+    `dim<-`(`dim<-`(A,c(dm[1]*dm[2],dm[3]))%*%diag(b),dm)
+}
+## ----
 
 ##' Project the abundance, biomass and yield in each age class forward
 ##' over one year when natural and fishing mortalities are known.
@@ -442,6 +472,163 @@ advance <- function(N,R=0,plus=FALSE) {
   N0
 }
 ## ----
+
+
+##' Project the abundance, biomass and yield in each age class forward
+##' over one year for multiple fleets when natural and fishing
+##' mortalities are known.
+##'
+##' This is a multiple fleet variant of the `project` function. The
+##' arguments are the same as for the `project` function except that
+##' fishing mortalities must be specified for each fleet.
+##'
+##' @title Yearly projections for known fishing mortality (multifleet).
+##' @param ws matrix of weight at age
+##' @param MMs matrix of *scaled* integrated natural mortalities
+##' @param FFs matrix of *scaled* integrated fishing mortalities
+##'   summed over fleets
+##' @param Ffs array of *scaled* fishing mortalities per fleet
+##' @param Nref vector of reference abundances for each age class
+##' @param nref vector of time steps at which the reference abundance
+##'   is estimated
+##' @param Bref optional reference biomass
+##' @param bref vector of time steps at which the reference biomass is
+##'   estimated
+##' @param yield should yield be calculated for the final time step,
+##'   ever time step, or not at all (see details)
+##' @return `project` returns a list with elements * `N` matrix of
+##'   abundance * `B` matrix of biomass * `Y` matrix or vector of
+##'   yield
+##' @seealso [project()], [projectC()], [advance()] for annual
+##'   projection, [ageStructureD()], [ageStructureS()] for initial age
+##'   structure
+##' @example inst/examples/projectMF.R
+##' @export
+## ---- projectMF
+projectMF <- function(ws,MMs,FFs=0,Ffs=0,Nref=1,nref=1,Bref=NA,bref=nref,yield=2) {
+
+  if(length(Nref==1)) Nref <- rep.int(Nref,ncol(MMs))
+
+  ## Integrate N and scale to reference abundance
+  N <- exp(-MMs-FFs)
+  for(j in seq_len(ncol(N))) N[,j] <- Nref[j]/mean(N[nref,j])*N[,j]
+
+  ## Scale by weight at age
+  B <- ws*N
+
+  ## Rescale to match reference biomass
+  if(!is.na(Bref)) {
+    r <- Bref/sum(trapzMeans(B[bref,,drop=FALSE]))
+    N <- r*N
+    B <- r*B
+  }
+
+  ## Integrate yield
+  Y <- switch(yield,
+              trapz(Ffs*as.vector(B),1/(nrow(B)-1)),
+              ctrapz(Ffs*as.vector(B),1/(nrow(B)-1)))
+
+  list(N=N,B=B,Y=Y)
+}
+## ----
+
+
+
+
+##' Projection of abundance, biomass and yield by age class forward
+##' over a year for multiple fleets when natural mortality and total
+##' annual catch of each fleet are known.
+##'
+##' This is a multiple fleet variant of the `project` function. The
+##' arguments are the same as for the `project` function except that
+##' fishing mortalities must be specified for each fleet.
+##'
+##' @title Yearly projections for known catch (multifleet).
+##' @param ws matrix of weight at age
+##' @param MMs matrix of *scaled* integrated natural mortalities
+##' @param Fs matrix of *unscaled* integrated fishing mortalities
+##'   summed over fleets
+##' @param fs array of *unscaled* fishing mortalities per fleet
+##' @param Catch target total annual catch
+##' @param Nref vector of reference abundances for each age class
+##' @param nref vector of time steps at which the reference abundance
+##'   is estimated
+##' @param Bref optional reference biomass
+##' @param bref vector of time steps at which the reference biomass is
+##'   estimated
+##' @param yield should yield be calculated for the final time step,
+##'   ever time step, or not at all (see details)
+##' @param Fmax the maximum reasonable annual scaling of fishing
+##'   mortality
+##' @param tol the tolerance on target catch
+##' @return `projectC` returns a list with elements * `N` matrix of
+##'   abundance * `B` matrix of biomass * `Y` vector or matrix of
+##'   yield * `F` annual fishing mortality required to reproduce the
+##'   observed catch.
+##' @seealso [projectC()], [advance()] for annual projection,
+##'   [ageStructureD()], [ageStructureS()] for initial age structure
+##' @example inst/examples/projectCMF.R
+##' @importFrom stats uniroot
+##' @export
+## ---- projectCMF
+projectCMF <- function(ws,MMs,Fs,fs,Catch,Nref,nref=1,Bref=NA,bref=nref,yield=2,
+                       Fmax=2.5,tol=1.0E-6) {
+  nfleets <- dim(Fs)[3]
+
+  F <- rep(0,nfleets)
+  ## Apply Newton's method
+
+  repeat {
+    ## Compute projected yield
+    FFs <- scale3(Fs,F,TRUE)
+    Ffs <- scale3(fs,F,FALSE)
+    pr <- projectMF(ws,MMs,FFs,Ffs,Nref,nref,Bref,bref,yield=1)
+    Y <- colSums(pr$Y)
+
+    ## Test for convergence
+    if(all(abs(Y - Catch) < tol | (F==Fmax & Y < Catch))) break
+
+
+    ## Select fleets to update
+    ok <- (F < Fmax) | ((F == Fmax) & (Y > Catch))
+
+    ## Jacobian of the yield
+    J <- matrix(0,nfleets,nfleets)
+    for(k in 1:nfleets) {
+      J[k,k] <- sum(trapz(fs[,,k]*as.vector(pr$B),1/(nrow(pr$B)-1)))
+      J[,k] <- J[,k]-colSums(trapz(Ffs*as.vector(pr$B*Fs[,,k]),1/(nrow(pr$B)-1)))
+      if(!is.na(Bref))
+        J[,k] <- J[,k]+colSums(pr$Y*sum(trapzMeans(Fs[bref,,k,drop=FALSE]*as.vector(pr$B[bref,])))/sum(trapzMeans(pr$B[bref,,drop=FALSE])))
+    }
+
+    ## Protected Newton step
+    F1 <- F
+    F1[ok] <- F[ok] - solve(J[ok,ok,drop=FALSE],(Y-Catch)[ok])
+    F1 <- pmin(pmax(F1,0),Fmax)
+    if(any(F1 == Fmax & F < Fmax)) {
+      pr1 <- projectMF(ws,MMs,scale3(Fs,F1,TRUE),scale3(fs,F1,FALSE),Nref,nref,Bref,bref,yield=1)
+      Y1 <- colSums(pr1$Y)
+      over <- F1==Fmax & F < Fmax & Y1 > Catch
+      F1[over] <- F[over]+((F1-F)*(Catch-Y)/(Y1 - Y))[over]
+
+    }
+    F <- F1
+  }
+
+  ## Recalculate
+  pr <- projectMF(ws,MMs,FFs,Ffs,Nref,nref,Bref,bref,yield)
+  pr$F <- F
+  pr
+}
+## ----
+
+
+
+
+
+
+
+
 
 
 

@@ -1,0 +1,97 @@
+## projectMF
+
+The `projectMF` is a multifleet variation of the the `project`
+function, that projects abundance, biomass and yield by age class
+forward over one year when natural and fishing mortalities for each
+fleet are known.
+
+#### Setup
+
+Define age classes and within year time steps
+```{r}
+## Daily time steps and 7 age classes
+nsteps <- 365
+Ages <- 2:8
+Days <- seq(from=0, to=1, length=nsteps+1)
+h <- 1/nsteps
+```
+
+Create matrices of age, length and weight for each time step and age class
+```{r}
+## Ages
+ages <- outer(X=Days, Y=Ages, FUN="+")
+## Age-length and length-weight conversions
+ls <- vonBertalanffyAL(A=ages, t0=0.0667, K=0.5, Linf=500)
+ws <- powerLW(L=ls, a=9E-10, b=3.32)
+```
+
+Define the normalized intra-annual natural mortality, its integral and the annual scaling
+```{r}
+## Constant intra-annual natural mortality
+ms <- matrix(data=1, nrow=nsteps+1, ncol=length(x=Ages))
+ms <- ms/mean(x=trapz(fs=ms, h=h))
+Ms <- ctrapz(fs=ms, h=h)
+Msf <- final(P=Ms)
+M <- 0.1
+```
+
+
+Create the vector of within year distribution of fishing effort,
+assuming fishing occurs on days 80 to 219, but split into two fleets, 
+```{r}
+## Normalized within year distribution of fishing effort
+fwy <- double(length=nsteps+1)
+fwy[81:220] <- 1
+fwy <- fwy/trapz(fs=fwy, h=h)
+fwy1 <- fwy2 <- fwy
+## Fleet 1 doesn't fish from day 150 to 219
+fwy1[151:220] <- 0
+## Fleet 2 doesn't fish from day 80 to 149
+fwy2[81:150] <- 0
+```
+
+Define a length based selectivity
+```{r}
+## Length based selectivity
+ss <- rampOgive(x=ls, x50=420, xrange=30)
+```
+
+Define the normalized intra-annual fishing mortality, its integral and
+the annual scaling.
+```{r}
+## Intra-annual fishing mortality - effort by selectivity
+fs <- array(0,c(nsteps+1,length(Ages),2))
+fs[,,1] <- fwy1*ss
+fs[,,2] <- fwy2*ss
+Fs <- ctrapz(fs=fs, h=h)
+Fsf <- Fs[nrow(Fs),,] #final(P=Fs)
+F <- c(0.2,0.2)
+```
+
+#### Projection from equilibrium 
+
+Project forward one year from an equilibrium age structure.
+
+Compute an intial age structure assuming constant mortalities and
+assuming no plus class
+```{r}
+## Deterministic initial age structure
+N0 <- ageStructureD(MMsf=M*Msf, FFsf=Fsf%*%F)
+N0
+```
+
+Project forward for a single year with known mortalities. A yield for
+each fleet is returned
+```{r}
+## Scale by F
+FFs <- scale3(Fs,F,sum=TRUE)
+Ffs <- scale3(fs,F,sum=FALSE)
+## Annual projection from N0
+pr <- projectMF(ws=ws, MMs=M*Ms, FFs=FFs, Ffs=Ffs, Nref=N0, yield=1)
+pr$Y
+```
+
+The total yield per fleet is
+```{r}
+colSums(pr$Y)
+```

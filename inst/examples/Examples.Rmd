@@ -29,6 +29,8 @@ knitr::purl("trapzMeans.Rmd",documentation=0,quiet=TRUE)
 knitr::purl("project.Rmd",documentation=0,quiet=TRUE)
 knitr::purl("projectC.Rmd",documentation=0,quiet=TRUE)
 knitr::purl("advance.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("projectMF.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("projectCMF.Rmd",documentation=0,quiet=TRUE)
 knitr::purl("rescaleProjection.Rmd",documentation=0,quiet=TRUE)
 knitr::purl("ageStructureD.Rmd",documentation=0,quiet=TRUE)
 knitr::purl("ageStructureS.Rmd",documentation=0,quiet=TRUE)
@@ -70,6 +72,12 @@ library(Grym)
 ```
 
 ```{r,child="advance.Rmd"}
+```
+
+```{r,child="projectMF.Rmd"}
+```
+
+```{r,child="projectCMF.Rmd"}
 ```
 
 ```{r,child="rescaleProjection.Rmd"}

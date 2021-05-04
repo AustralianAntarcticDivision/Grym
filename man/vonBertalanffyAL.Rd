@@ -74,6 +74,10 @@ matplot(x=Days, y=ls, type="l", lty=1, xlab="Day", ylab="Length", main="Length a
 ## Age-length conversion - growth occurs in middle of the year
 ls <- vonBertalanffyRAL(A=ages, t0=0.0667, K=0.5, Linf=500, f0=0.3, f1=0.7)
 matplot(x=Days, y=ls, type="l", lty=1, xlab="Day", ylab="Length", main="Length at Age")
+
+## Age-length conversion - growth occurs across the year boundary
+ls <- vonBertalanffyRAL(A=ages, t0=0.0667, K=0.5, Linf=500, f0=0.8, f1=1.2)
+matplot(x=Days, y=ls, type="l", lty=1, xlab="Day", ylab="Length", main="Length at Age")
 }
 \seealso{
 \code{\link[=powerLW]{powerLW()}} for length-weight modelling.
