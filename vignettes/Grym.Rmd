@@ -836,7 +836,7 @@ Q \sim \operatorname{LogNormal}(\mu,\sigma^2),
 then
 \[
 \begin{align}
-\mu &= \log \frac{\mu_{Q}^{2}}{\mu_{Q}^{2} + \sigma_{Q}^{2}}\\
+\mu &= \log \frac{\mu_{Q}^{2}}{\sqrt{\mu_{Q}^{2} + \sigma_{Q}^{2}}}\\
 \sigma^{2} &= \log \frac{\mu_{Q}^{2} + \sigma_{Q}^{2}}{\mu_{Q}^{2}}\\
 \end{align}
 \]
