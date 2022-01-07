@@ -105,6 +105,12 @@ initial(P=pr$N)
 ## Final abundance
 final(P=pr$N)
 
+monitor <- 101:150
+## Mean total abundance in the monitoring period
+meanStock(P=pr$N, period=monitor)
+## Mean total biomass in the monitoring period
+meanStock(P=pr$B, period=monitor)
+
 ## Maturity at age
 gs <- rampOgive(x=ls, x50=410, xrange=40)
 

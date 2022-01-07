@@ -82,6 +82,16 @@ initial(P=pr$N)
 final(P=pr$N)
 ```
 
+#### Mean Stock
+
+The mean total abundance and biomass from day 100 to 150 (time steps 101 to 150)
+```{r}
+monitor <- 101:150
+## Mean total abundance in the monitoring period
+meanStock(P=pr$N, period=monitor)
+## Mean total biomass in the monitoring period
+meanStock(P=pr$B, period=monitor)
+```
 
 #### Spawning Stock 
 
