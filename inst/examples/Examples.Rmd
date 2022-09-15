@@ -24,6 +24,7 @@ options(knitr.duplicate.label = 'allow')
 knitr::purl("vonBertalanffyAL.Rmd",documentation=0,quiet=TRUE)
 knitr::purl("powerLW.Rmd",documentation=0,quiet=TRUE)
 knitr::purl("rampOgive.Rmd",documentation=0,quiet=TRUE)
+knitr::purl("logisticOgive.Rmd",documentation=0,quiet=TRUE)
 knitr::purl("trapz.Rmd",documentation=0,quiet=TRUE)
 knitr::purl("trapzMeans.Rmd",documentation=0,quiet=TRUE)
 knitr::purl("project.Rmd",documentation=0,quiet=TRUE)
@@ -55,6 +56,9 @@ library(Grym)
 ```
 
 ```{r,child="rampOgive.Rmd"}
+```
+
+```{r,child="logisticOgive.Rmd"}
 ```
 
 ```{r,child="trapz.Rmd"}

@@ -396,6 +396,11 @@ distribution function of a uniform distribution
 <<rampOgive>>
 ```
 
+Grym also provides a logistic alternative parameterized in terms of the 50th and 95th percentiles.
+```{r,eval=FALSE}
+<<logisticOgive>>
+```
+
 
 
 

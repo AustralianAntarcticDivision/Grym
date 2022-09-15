@@ -1,0 +1,12 @@
+## logisticOgive
+
+Grym provides a logistic ogive to model both maturity or fishing selectivity.
+
+
+The `logisticOgive` function implements a logistic ogive parameterized in
+terms of the 50th and 95th percentiles
+```{r}
+x <- seq(from=150, to=450, by=10)
+p <- logisticOgive(x, x50=300, x95=380)
+plot(x=x, y=p, type="l")
+```

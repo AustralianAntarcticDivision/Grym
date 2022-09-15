@@ -109,6 +109,26 @@ rampOgive <- function(x,x50,xrange) {
 }
 ## ----
 
+
+##' Logistic shaped ogive function.
+##'
+##' Compute a logistic shaped ogive function, parameterized so that `x50`
+##' is the middle of the ramp, and `x95` is the 95th percentile.
+##' @title Ramp ogive
+##' @param x a matrix or vector
+##' @param x50 50th percentile
+##' @param x95 95th percentile
+##' @return A matrix or vector of probabilities of the same size as x
+##' @example inst/examples/logisticOgive.R
+##' @importFrom stats plogis qlogis
+##' @export
+## ---- logisticOgive
+logisticOgive <- function(x,x50,x95) {
+  plogis(x,x50,(x95-x50)/qlogis(0.95))
+}
+## ----
+
+
 ##' Numerical quadrature by the composite trapezoidal rule.
 ##'
 ##' Given a vector `fs` of function values evaluated over an even
