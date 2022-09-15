@@ -114,7 +114,7 @@ rampOgive <- function(x,x50,xrange) {
 ##'
 ##' Compute a logistic shaped ogive function, parameterized so that `x50`
 ##' is the middle of the ramp, and `x95` is the 95th percentile.
-##' @title Ramp ogive
+##' @title Logisitc Ogive
 ##' @param x a matrix or vector
 ##' @param x50 50th percentile
 ##' @param x95 95th percentile
@@ -125,6 +125,32 @@ rampOgive <- function(x,x50,xrange) {
 ## ---- logisticOgive
 logisticOgive <- function(x,x50,x95) {
   plogis(x,x50,(x95-x50)/qlogis(0.95))
+}
+## ----
+
+
+##' Double Normal Selectivity.
+##'
+##' Compute a double Normal or "dome shaped" selectivity function, parameterized in terms of the
+##' endpoint, width and minima of the ascending and descending limbs.
+##' 
+##' @title Double Normal Selectivity
+##' @param x a matrix or vector
+##' @param x1 endpoint of the ascending limb
+##' @param x2 endpoint of the descending limb
+##' @param s1 width of the ascending limb
+##' @param s2 width of the descending limb
+##' @param y1 minimum selectivity the ascending limb
+##' @param y2 dispersion of the descending limb
+##' @return A matrix or vector of probabilities of the same size as x
+##' @example inst/examples/doubleNormalSelectivity.R
+##' @export
+## ---- doubleNormalSelectivity
+doubleNormalSelectivity <- function(x,x1,x2,s1,s2,y1,y2) {
+  ifelse(x<x1,
+         y1+(1-y1)*exp(-((x-x1)/s1)^2/2),
+         ifelse(x>x2,
+                y2+(1-y2)*exp(-((x-x2)/s2)^2/2),1))
 }
 ## ----
 

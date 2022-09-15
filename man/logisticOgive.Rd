@@ -2,7 +2,7 @@
 % Please edit documentation in R/Grym.R
 \name{logisticOgive}
 \alias{logisticOgive}
-\title{Ramp ogive}
+\title{Logisitc Ogive}
 \usage{
 logisticOgive(x, x50, x95)
 }

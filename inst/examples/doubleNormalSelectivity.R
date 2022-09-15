@@ -1,0 +1,3 @@
+x <- seq(from=150, to=450, by=2)
+p <- doubleNormalSelectivity(x, x1=250, x2=320, s1=30, s2=15, y1=0.1, y2=0.7)
+plot(x=x, y=p, type="l")

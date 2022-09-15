@@ -396,9 +396,15 @@ distribution function of a uniform distribution
 <<rampOgive>>
 ```
 
-Grym also provides a logistic alternative parameterized in terms of the 50th and 95th percentiles.
+Grym also provides a logistic alternative parameterized in terms of the 50th and 95th percentiles
 ```{r,eval=FALSE}
 <<logisticOgive>>
+```
+
+and a double Normal selectivity parameterized in terms of the endpoints, widths and minimia of the
+ascending and descending limbs
+```{r,eval=FALSE}
+<<doubleNormalSelectivity>>
 ```
 
 
