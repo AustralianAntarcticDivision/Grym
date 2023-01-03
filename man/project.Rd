@@ -13,7 +13,7 @@ project(
   nref = 1,
   Bref = NA,
   bref = nref,
-  yield = 2
+  yield = 2L
 )
 }
 \arguments{

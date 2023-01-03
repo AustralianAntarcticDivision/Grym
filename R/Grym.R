@@ -133,7 +133,7 @@ logisticOgive <- function(x,x50,x95) {
 ##'
 ##' Compute a double Normal or "dome shaped" selectivity function, parameterized in terms of the
 ##' endpoint, width and minima of the ascending and descending limbs.
-##' 
+##'
 ##' @title Double Normal Selectivity
 ##' @param x a matrix or vector
 ##' @param x1 endpoint of the ascending limb
@@ -181,9 +181,9 @@ doubleNormalSelectivity <- function(x,x1,x2,s1,s2,y1,y2) {
 ## ---- trapz
 trapz <- function(fs,h=1) {
   if(is.matrix(fs))
-    h*(colSums(fs)-(fs[1,]+fs[nrow(fs),])/2)
+    h*(colSums(fs)-(fs[1L,]+fs[nrow(fs),])/2)
   else
-    h*(sum(fs)-(fs[1]+fs[length(fs)])/2)
+    h*(sum(fs)-(fs[1L]+fs[length(fs)])/2)
 }
 ## ----
 
@@ -195,9 +195,9 @@ ctrapz <- function(fs,h=1) {
   if(is.matrix(fs)) {
     Fs <- matrix(0,nrow(fs),ncol(fs))
     for(j in seq_len(ncol(fs)))
-        Fs[-1,j] <- cumsum((h/2)*(fs[-1,j]+fs[-nrow(fs),j]))
+      Fs[-1L,j] <- cumsum((h/2)*(fs[-1L,j]+fs[-nrow(fs),j]))
   } else {
-    Fs <- c(0,cumsum((h/2)*(fs[-1]+fs[-length(fs)])))
+    Fs <- c(0,cumsum((h/2)*(fs[-1L]+fs[-length(fs)])))
   }
   Fs
 }
@@ -227,7 +227,7 @@ ctrapz <- function(fs,h=1) {
 ##' @export
 ## ---- trapzMeans
 trapzMeans <- function(fs) {
-  if(NROW(fs)==1) fs else trapz(fs)/(NROW(fs)-1)
+  if(NROW(fs)==1L) fs else trapz(fs)/(NROW(fs)-1L)
 }
 ## ----
 
@@ -287,9 +287,9 @@ trapzMeans <- function(fs) {
 ##' @example inst/examples/project.R
 ##' @export
 ## ---- project
-project <- function(ws,MMs,FFs=0,Ffs=0,Nref=1,nref=1,Bref=NA,bref=nref,yield=2) {
+project <- function(ws,MMs,FFs=0,Ffs=0,Nref=1,nref=1,Bref=NA,bref=nref,yield=2L) {
 
-  if(length(Nref==1)) Nref <- rep.int(Nref,ncol(MMs))
+  if(length(Nref)==1L) Nref <- rep.int(Nref,ncol(MMs))
 
   ## Integrate N and scale to reference abundance
   N <- exp(-MMs-FFs)
@@ -307,8 +307,8 @@ project <- function(ws,MMs,FFs=0,Ffs=0,Nref=1,nref=1,Bref=NA,bref=nref,yield=2) 
 
   ## Integrate yield
   Y <- switch(yield,
-              trapz(Ffs*B,1/(nrow(B)-1)),
-              ctrapz(Ffs*B,1/(nrow(B)-1)))
+              trapz(Ffs*B,1/(nrow(B)-1L)),
+              ctrapz(Ffs*B,1/(nrow(B)-1L)))
 
   list(N=N,B=B,Y=Y)
 }
@@ -346,7 +346,7 @@ project <- function(ws,MMs,FFs=0,Ffs=0,Nref=1,nref=1,Bref=NA,bref=nref,yield=2) 
 rescaleProjection <- function(pr,Nref=1,nref=1,Bref=NA,bref=nref) {
 
   N <- pr$N; B <- pr$B; Y <- pr$Y
-  if(length(Nref==1)) Nref <- rep.int(Nref,ncol(N))
+  if(length(Nref)==1L) Nref <- rep.int(Nref,ncol(N))
 
   ## Rescale to match reference abundance
   for(j in seq_len(ncol(N))) {
@@ -434,7 +434,7 @@ rescaleProjection <- function(pr,Nref=1,nref=1,Bref=NA,bref=nref) {
 ##' @importFrom stats uniroot
 ##' @export
 ## ---- projectC
-projectC <- function(ws,MMs,Fs,fs,Catch,Nref,nref=1,Bref=NA,bref=nref,yield=2,
+projectC <- function(ws,MMs,Fs,fs,Catch,Nref,nref=1,Bref=NA,bref=nref,yield=2L,
                      Fmax=2.5,tol=1.0E-6) {
 
   ## Function to calculate error in modelled yield
@@ -557,33 +557,33 @@ ageStructureS <- function(R,Msf,M,Fsf=0,F=0,plus=FALSE,N0=0) {
   n <- length(Msf)
   ## Initialize abundance
   N <- rep(N0,length.out=n)
-  N[1] <- R[1]
+  N[1L] <- R[1L]
 
   ## Optimize for constant mortalities
-  if(length(M)==1 && length(F)==1) {
+  if(length(M)==1L && length(F)==1L) {
 
     ## Precompute survivals
     S <- exp(-M*Msf-F*Fsf)
-    for(k in seq_len(length(R)-1)) {
+    for(k in seq_len(length(R)-1L)) {
       ## Project forward one year
       N <- N*S
       ## Advance age classes and recruit
       Np <- N[n]
-      N <- c(R[k+1],N[-n])
+      N <- c(R[k+1L],N[-n])
       if(plus) N[n] <- N[n]+Np
     }
 
   } else {
 
-    if(length(M)==1) M <- rep.int(M,length(R)-1)
-    if(length(F)==1) F <- rep.int(F,length(R)-1)
+    if(length(M)==1L) M <- rep.int(M,length(R)-1L)
+    if(length(F)==1L) F <- rep.int(F,length(R)-1L)
 
-    for(k in seq_len(length(R)-1)) {
+    for(k in seq_len(length(R)-1L)) {
       ## Project forward one year
       N <- N*exp(-M[k]*Msf-F[k]*Fsf)
       ## Advance age classes and recruit
       Np <- N[n]
-      N <- c(R[k+1],N[-n])
+      N <- c(R[k+1L],N[-n])
       if(plus) N[n] <- N[n]+Np
     }
   }
@@ -628,7 +628,7 @@ ageStructureS <- function(R,Msf,M,Fsf=0,F=0,plus=FALSE,N0=0) {
 ##' @rdname stockSummary
 ##' @export
 ## ---- initial
-initial <- function(P) P[1,]
+initial <- function(P) P[1L,]
 ## ----
 
 ##' @rdname stockSummary
@@ -741,7 +741,7 @@ spawningB0S <- function(R,gs,ws,Ms,M,spawn,plus=FALSE) {
   SB0 <- double(nrow(R))
   gs <- gs[spawn,,drop=FALSE]
 
-  if(length(M)==1) {
+  if(length(M)==1L) {
     ## Constant M - project once and compute spawning biomass by
     ## rescaling by random age structures.  This could be optimized further.
     pr <- project(ws,M*Ms)
@@ -863,19 +863,19 @@ prRecruitParsGYM <- function(Msf,mnR,vrR,r=1,p=0,plus=0,Mbrak=seq(0,2.5,0.1),tol
     ## One year survivals for each age class
     S <- exp(-M*Msf)
     ## Cumulative survivals from r adjusted for plus class
-    S <- cumprod(c(1,S[r:(length(S)-1)],rep(S[length(S)],plus)))
+    S <- cumprod(c(1,S[r:(length(S)-1L)],rep(S[length(S)],plus)))
 
     mnR+vrR-1/sum(S)
   }
 
   ## Solve err(M) == 0
   ys <- double(length(Mbrak))
-  ys[1] <- err(Mbrak[1])
-  for(k in 2:length(Mbrak)) {
+  ys[1L] <- err(Mbrak[1L])
+  for(k in 2L:length(Mbrak)) {
     ys[k] <- err(Mbrak[k])
-    if(ys[k-1]*ys[k] <= 0) break
+    if(ys[k-1L]*ys[k] <= 0) break
   }
-  sol <- uniroot(err,Mbrak[(k-1):k],tol=tol)
+  sol <- uniroot(err,Mbrak[(k-1L):k],tol=tol)
   ## Raise error if uniroot fails?
 
   ## Set M and calculate sums
@@ -886,7 +886,7 @@ prRecruitParsGYM <- function(Msf,mnR,vrR,r=1,p=0,plus=0,Mbrak=seq(0,2.5,0.1),tol
   S0 <- cumprod(c(S[-length(S)],rep(S[length(S)],plus)))
   s0 <- sum(S0)
   ## Cumulative survivals from r adjusted for plus class
-  Sr <- cumprod(c(S[r:(length(S)-1)],rep(S[length(S)],plus)))
+  Sr <- cumprod(c(S[r:(length(S)-1L)],rep(S[length(S)],plus)))
   s1 <- sum(Sr)
   s2 <- sum(Sr^2)
 
@@ -1006,7 +1006,7 @@ prRecruitPars0 <- function(Msf,mnR,vrR,r=1,plus=0,Mbrak=seq(0,2.5,0.1),tol=1.0E-
     ## One year survivals for each age class
     S <- exp(-M*Msf)
     ## Cumulative survivals from r adjusted for plus class
-    Sr <- cumprod(c(S[r:(length(S)-1)],rep(S[length(S)],plus)))
+    Sr <- cumprod(c(S[r:(length(S)-1L)],rep(S[length(S)],plus)))
     s1 <- sum(Sr)
     s2 <- sum(Sr^2)
     1/(1+s1)+(s2-s1)*(1+s1)/(s1^2+s2)*vrR-mnR
@@ -1014,12 +1014,12 @@ prRecruitPars0 <- function(Msf,mnR,vrR,r=1,plus=0,Mbrak=seq(0,2.5,0.1),tol=1.0E-
 
   ## Solve err(M) == 0
   ys <- double(length(Mbrak))
-  ys[1] <- err(Mbrak[1])
-  for(k in 2:length(Mbrak)) {
+  ys[1L] <- err(Mbrak[1L])
+  for(k in 2L:length(Mbrak)) {
     ys[k] <- err(Mbrak[k])
-    if(ys[k-1]*ys[k] <= 0) break
+    if(ys[k-1L]*ys[k] <= 0) break
   }
-  sol <- uniroot(err,Mbrak[(k-1):k],tol=tol)
+  sol <- uniroot(err,Mbrak[(k-1L):k],tol=tol)
   ## Raise error if uniroot fails?
 
   ## Set M and calculate sums
@@ -1030,7 +1030,7 @@ prRecruitPars0 <- function(Msf,mnR,vrR,r=1,plus=0,Mbrak=seq(0,2.5,0.1),tol=1.0E-
   S0 <- cumprod(c(S[-length(S)],rep(S[length(S)],plus)))
   s0 <- sum(S0)
   ## Cumulative survivals from r adjusted for plus class
-  Sr <- cumprod(c(S[r:(length(S)-1)],rep(S[length(S)],plus)))
+  Sr <- cumprod(c(S[r:(length(S)-1L)],rep(S[length(S)],plus)))
   s1 <- sum(Sr)
   s2 <- sum(Sr^2)
   mnQ <- 1/s0
@@ -1046,7 +1046,7 @@ prRecruitPars0 <- function(Msf,mnR,vrR,r=1,plus=0,Mbrak=seq(0,2.5,0.1),tol=1.0E-
 ##' @export
 ## ---- prRecruitsIB
 prRecruitsIB <- function(n,ps,mnA=1) {
-  R <- rbeta(n,ps$IB[1],ps$IB[2])
+  R <- rbeta(n,ps$IB[1L],ps$IB[2L])
   (ps$s0*mnA)*(R/(1-R))
 }
 ## ----
@@ -1057,7 +1057,7 @@ prRecruitsIB <- function(n,ps,mnA=1) {
 ##' @export
 ## ---- prRecruitsQuantileIB
 prRecruitsQuantileIB <- function(q,ps,mnA=1) {
-  r50 <- qbeta(q,ps$IB[1],ps$IB[2])
+  r50 <- qbeta(q,ps$IB[1L],ps$IB[2L])
   (ps$s0*mnA)*(r50/(1-r50))
 }
 ## ----
@@ -1080,7 +1080,7 @@ prRecruitParsIB <- function(Msf,mnR,vrR,r=1,p=0,plus=0,Mbrak=seq(0,2.5,0.1),tol=
 ##' @export
 ## ---- prRecruitsG
 prRecruitsG <- function(n,ps,mnA=1) {
-  (ps$s0*mnA)*rgamma(n,ps$G[1],ps$G[2])
+  (ps$s0*mnA)*rgamma(n,ps$G[1L],ps$G[2L])
 }
 ## ----
 
@@ -1090,7 +1090,7 @@ prRecruitsG <- function(n,ps,mnA=1) {
 ##' @export
 ## ---- prRecruitsQuantileG
 prRecruitsQuantileG <- function(q,ps,mnA=1) {
-  (ps$s0*mnA)*qgamma(q,ps$G[1],ps$G[2])
+  (ps$s0*mnA)*qgamma(q,ps$G[1L],ps$G[2L])
 }
 ## ----
 
@@ -1112,7 +1112,7 @@ prRecruitParsG <- function(Msf,mnR,vrR,r=1,p=0,plus=0,Mbrak=seq(0,2.5,0.1),tol=1
 ##' @export
 ## ---- prRecruitsLN
 prRecruitsLN <- function(n,ps,mnA=1) {
-  (ps$s0*mnA)*rlnorm(n,ps$LN[1],ps$LN[2])
+  (ps$s0*mnA)*rlnorm(n,ps$LN[1L],ps$LN[2L])
 }
 ## ----
 
@@ -1122,7 +1122,7 @@ prRecruitsLN <- function(n,ps,mnA=1) {
 ##' @export
 ## ---- prRecruitsQuantileLN
 prRecruitsQuantileLN <- function(q,ps,mnA=1) {
-  (ps$s0*mnA)*qlnorm(q,ps$LN[1],ps$LN[2])
+  (ps$s0*mnA)*qlnorm(q,ps$LN[1L],ps$LN[2L])
 }
 ## ----
 
@@ -1145,8 +1145,8 @@ prRecruitParsLN <- function(Msf,mnR,vrR,r=1,p=0,plus=0,Mbrak=seq(0,2.5,0.1),tol=
 ##' @export
 ## ---- prRecruitsDIB
 prRecruitsDIB <- function(n,ps,mnA=1) {
-  R <- rbeta(n,ps$DIB[1],ps$DIB[2])
-  (ps$s0*mnA)*rbinom(n,1,1-ps$DIB[3])*(R/(1-R))
+  R <- rbeta(n,ps$DIB[1L],ps$DIB[2L])
+  (ps$s0*mnA)*rbinom(n,1,1-ps$DIB[3L])*(R/(1-R))
 }
 ## ----
 
@@ -1156,8 +1156,8 @@ prRecruitsDIB <- function(n,ps,mnA=1) {
 ##' @export
 ## ---- prRecruitsQuantileDIB
 prRecruitsQuantileDIB <- function(q,ps,mnA=1) {
-  p <- ps$DIB[3]
-  rq <- qbeta((q-p)/(1-p),ps$DIB[1],ps$DIB[2])
+  p <- ps$DIB[3L]
+  rq <- qbeta((q-p)/(1-p),ps$DIB[1L],ps$DIB[2L])
   ifelse(q < p,0,(ps$s0*mnA)*(rq/(1-rq)))
 }
 ## ----
@@ -1184,7 +1184,7 @@ prRecruitParsDIB <- function(Msf,mnR,vrR,r=1,p=0,plus=0,Mbrak=seq(0,2.5,0.1),tol
 ##' @export
 ## ---- prRecruitsDG
 prRecruitsDG <- function(n,ps,mnA=1) {
-  (ps$s0*mnA)*rbinom(n,1,1-ps$DG[3])*rgamma(n,ps$DG[1],ps$DG[2])
+  (ps$s0*mnA)*rbinom(n,1,1-ps$DG[3L])*rgamma(n,ps$DG[1L],ps$DG[2L])
 }
 ## ----
 
@@ -1194,8 +1194,8 @@ prRecruitsDG <- function(n,ps,mnA=1) {
 ##' @export
 ## ---- prRecruitsQuantileDG
 prRecruitsQuantileDG <- function(q,ps,mnA=1) {
-  p <- ps$DG[3]
-  ifelse(q < p,0,(ps$s0*mnA)*qgamma((q-p)/(1-p),ps$DG[1],ps$DG[2]))
+  p <- ps$DG[3L]
+  ifelse(q < p,0,(ps$s0*mnA)*qgamma((q-p)/(1-p),ps$DG[1L],ps$DG[2L]))
 }
 ## ----
 
@@ -1223,7 +1223,7 @@ prRecruitParsDG <- function(Msf,mnR,vrR,r=1,p=0,plus=0,Mbrak=seq(0,2.5,0.1),tol=
 ##' @export
 ## ---- prRecruitsDLN
 prRecruitsDLN <- function(n,ps,mnA=1) {
-  (ps$s0*mnA)*rbinom(n,1,1-ps$DLN[3])*rlnorm(n,ps$DLN[1],ps$DLN[2])
+  (ps$s0*mnA)*rbinom(n,1,1-ps$DLN[3L])*rlnorm(n,ps$DLN[1L],ps$DLN[2L])
 }
 ## ----
 
@@ -1233,8 +1233,8 @@ prRecruitsDLN <- function(n,ps,mnA=1) {
 ##' @export
 ## ---- prRecruitsQuantileDLN
 prRecruitsQuantileDLN <- function(q,ps,mnA=1) {
-  p <- ps$DLN[3]
-  ifelse(q < p,0,(ps$s0*mnA)*qlnorm((q-p)/(1-p),ps$DLN[1],ps$DLN[2]))
+  p <- ps$DLN[3L]
+  ifelse(q < p,0,(ps$s0*mnA)*qlnorm((q-p)/(1-p),ps$DLN[1L],ps$DLN[2L]))
 }
 ## ----
 
@@ -1275,7 +1275,7 @@ prRecruitParsDLN <- function(Msf,mnR,vrR,r=1,p=0,plus=0,Mbrak=seq(0,2.5,0.1),tol
 ##' @export
 ## ---- resampleRGYM
 resampleRGYM <- function(mnR,vrR,n) {
-  vrR <- rchisq(1,n-1)/(n-1)*vrR
+  vrR <- rchisq(1,n-1L)/(n-1L)*vrR
   mnR <- rnorm(1,mnR,sqrt(vrR)/n)
   list(mnR=pmax(0,pmin(1,mnR)),vrR=vrR)
 }
@@ -1369,7 +1369,7 @@ prBootstrap <- function(prRec,ps,n,Msf,mnA=1,r=1,plus=0) {
 surveySurvival <- function(yr,cls,s1,s2,Ms,M,Fs=0,F=0,rcls=1) {
 
 
-  if(length(M)==1 && length(F)==1) {
+  if(length(M)==1L && length(F)==1L) {
     ## Precompute survivals
     N <- exp(-M*Ms-F*Fs)
     ## Survival from first class to start of survey year

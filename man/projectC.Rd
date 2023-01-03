@@ -14,7 +14,7 @@ projectC(
   nref = 1,
   Bref = NA,
   bref = nref,
-  yield = 2,
+  yield = 2L,
   Fmax = 2.5,
   tol = 1e-06
 )
