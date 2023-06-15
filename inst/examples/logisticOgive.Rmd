@@ -3,10 +3,10 @@
 Grym provides a logistic ogive to model both maturity or fishing selectivity.
 
 
-The `logisticOgive` function implements a logistic ogive parameterized in
-terms of the 50th and 95th percentiles
+The `logisticOgive` function implements a logistic ogive parameterized in terms of the 50th
+percentile, and the difference between the 95th and 50th percentiles
 ```{r}
 x <- seq(from=150, to=450, by=10)
-p <- logisticOgive(x, x50=300, x95=380)
+p <- logisticOgive(x, x50=300, d95=80)
 plot(x=x, y=p, type="l")
 ```

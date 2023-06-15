@@ -112,27 +112,30 @@ rampOgive <- function(x,x50,xrange) {
 
 ##' Logistic shaped ogive function.
 ##'
-##' Compute a logistic shaped ogive function, parameterized so that `x50`
-##' is the middle of the ramp, and `x95` is the 95th percentile.
-##' @title Logisitc Ogive
+##' Compute a logistic shaped ogive function, parameterized so that
+##' `x50` is the middle of the ramp, and `d95` is the difference in
+##' the 95th and 50th percentiles.
+##' 
+##' @title Logistic Ogive
 ##' @param x a matrix or vector
 ##' @param x50 50th percentile
-##' @param x95 95th percentile
+##' @param d95 difference between the 95th and 50th percentiles
 ##' @return A matrix or vector of probabilities of the same size as x
 ##' @example inst/examples/logisticOgive.R
 ##' @importFrom stats plogis qlogis
 ##' @export
 ## ---- logisticOgive
-logisticOgive <- function(x,x50,x95) {
-  plogis(x,x50,(x95-x50)/qlogis(0.95))
+logisticOgive <- function(x,x50,d95) {
+  plogis(x,x50,d95/qlogis(0.95))
 }
 ## ----
 
 
 ##' Double Normal Selectivity.
 ##'
-##' Compute a double Normal or "dome shaped" selectivity function, parameterized in terms of the
-##' endpoint, width and minima of the ascending and descending limbs.
+##' Compute a double Normal or "dome shaped" selectivity function,
+##' parameterized in terms of the endpoint, width and minima of the
+##' ascending and descending limbs.
 ##'
 ##' @title Double Normal Selectivity
 ##' @param x a matrix or vector

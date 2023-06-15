@@ -2,16 +2,16 @@
 % Please edit documentation in R/Grym.R
 \name{logisticOgive}
 \alias{logisticOgive}
-\title{Logisitc Ogive}
+\title{Logistic Ogive}
 \usage{
-logisticOgive(x, x50, x95)
+logisticOgive(x, x50, d95)
 }
 \arguments{
 \item{x}{a matrix or vector}
 
 \item{x50}{50th percentile}
 
-\item{x95}{95th percentile}
+\item{d95}{difference between the 95th and 50th percentiles}
 }
 \value{
 A matrix or vector of probabilities of the same size as x
@@ -20,11 +20,12 @@ A matrix or vector of probabilities of the same size as x
 Logistic shaped ogive function.
 }
 \details{
-Compute a logistic shaped ogive function, parameterized so that \code{x50}
-is the middle of the ramp, and \code{x95} is the 95th percentile.
+Compute a logistic shaped ogive function, parameterized so that
+\code{x50} is the middle of the ramp, and \code{d95} is the difference in
+the 95th and 50th percentiles.
 }
 \examples{
 x <- seq(from=150, to=450, by=10)
-p <- logisticOgive(x, x50=300, x95=380)
+p <- logisticOgive(x, x50=300, d95=80)
 plot(x=x, y=p, type="l")
 }
