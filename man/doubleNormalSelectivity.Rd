@@ -28,8 +28,9 @@ A matrix or vector of probabilities of the same size as x
 Double Normal Selectivity.
 }
 \details{
-Compute a double Normal or "dome shaped" selectivity function, parameterized in terms of the
-endpoint, width and minima of the ascending and descending limbs.
+Compute a double Normal or "dome shaped" selectivity function,
+parameterized in terms of the endpoint, width and minima of the
+ascending and descending limbs.
 }
 \examples{
 x <- seq(from=150, to=450, by=2)
