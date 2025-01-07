@@ -98,7 +98,7 @@ powerWL <- function(W,a,b) {
 ##' @title Ramp ogive
 ##' @param x a matrix or vector
 ##' @param x50 mid-point of ramp
-##' @param xrange with of ramp
+##' @param xrange width of ramp
 ##' @return A matrix or vector of probabilities of the same size as x
 ##' @example inst/examples/rampOgive.R
 ##' @importFrom stats punif
