@@ -115,7 +115,7 @@ rampOgive <- function(x,x50,xrange) {
 ##' Compute a logistic shaped ogive function, parameterized so that
 ##' `x50` is the middle of the ramp, and `d95` is the difference in
 ##' the 95th and 50th percentiles.
-##' 
+##'
 ##' @title Logistic Ogive
 ##' @param x a matrix or vector
 ##' @param x50 50th percentile
@@ -201,6 +201,15 @@ ctrapz <- function(fs,h=1) {
       Fs[-1L,j] <- cumsum((h/2)*(fs[-1L,j]+fs[-nrow(fs),j]))
   } else {
     Fs <- c(0,cumsum((h/2)*(fs[-1L]+fs[-length(fs)])))
+  }
+  Fs
+}
+
+ctrapz_alt <- function(fs, h = 1) {
+  if (is.matrix(fs)) {
+    Fs <- apply(fs, 2, function(col) c(0, cumsum((h / 2) * (col[-1L] + col[-length(col)]))))
+  } else {
+    Fs <- c(0, cumsum((h / 2) * (fs[-1L] + fs[-length(fs)])))
   }
   Fs
 }
@@ -315,6 +324,34 @@ project <- function(ws,MMs,FFs=0,Ffs=0,Nref=1,nref=1,Bref=NA,bref=nref,yield=2L)
 
   list(N=N,B=B,Y=Y)
 }
+
+
+project_alt <- function(ws, MMs, FFs = 0, Ffs = 0, Nref = 1, nref = 1, Bref = NA, bref = nref, yield = 2L) {
+  if (length(Nref) == 1L) Nref <- rep.int(Nref, ncol(MMs))
+
+  # Integrate N and scale to reference abundance
+  N <- exp(-MMs - FFs)
+  scaling <- Nref / colMeans(N[nref, , drop = FALSE])
+  N <- sweep(N, 2, scaling, `*`)
+
+  # Scale by weight at age
+  B <- ws * N
+
+  # Rescale to match reference biomass
+  if (!is.na(Bref)) {
+    r <- Bref / sum(trapzMeans(B[bref, , drop = FALSE]))
+    N <- r * N
+    B <- r * B
+  }
+
+  # Integrate yield
+  Y <- switch(yield,
+              trapz(Ffs * B, 1 / (nrow(B) - 1L)),
+              ctrapz(Ffs * B, 1 / (nrow(B) - 1L)))
+
+  list(N = N, B = B, Y = Y)
+}
+
 ## ----
 
 ##' Rescale a projection to match a reference abundance and biomass.
@@ -370,6 +407,28 @@ rescaleProjection <- function(pr,Nref=1,nref=1,Bref=NA,bref=nref) {
 
   list(N=N,B=B,Y=Y,F=pr$F)
 }
+
+rescaleProjection_alt <- function(pr, Nref = 1, nref = 1, Bref = NA, bref = nref) {
+  N <- pr$N
+  B <- pr$B
+  Y <- pr$Y
+  if (length(Nref) == 1L) Nref <- rep.int(Nref, ncol(N))
+
+  scaling <- Nref / colMeans(N[nref, , drop = FALSE])
+  N <- sweep(N, 2, scaling, `*`)
+  B <- sweep(B, 2, scaling, `*`)
+  if (!is.null(Y)) Y <- if (is.matrix(Y)) sweep(Y, 2, scaling, `*`) else scaling * Y
+
+  if (!is.na(Bref)) {
+    r <- Bref / sum(trapzMeans(B[bref, , drop = FALSE]))
+    N <- r * N
+    B <- r * B
+    if (!is.null(Y)) Y <- r * Y
+  }
+
+  list(N = N, B = B, Y = Y, F = pr$F)
+}
+
 ## ----
 
 
@@ -462,6 +521,62 @@ projectC <- function(ws,MMs,Fs,fs,Catch,Nref,nref=1,Bref=NA,bref=nref,yield=2L,
   ## Recalculate
   c(project(ws,MMs,F*Fs,F*fs,Nref,nref,Bref,bref,yield),F=F)
 }
+
+projectC_alt <- function(ws, MMs, Fs, fs, Catch, Nref, nref = 1, Bref = NA, bref = nref, yield = 2L, Fmax = 2.5, tol = 1.0E-6) {
+  # Cache reusable matrices
+  Fscaled <- Fs
+  fscaled <- fs
+
+  err <- function(F) {
+    sum(project(ws, MMs, F * Fscaled, F * fscaled, Nref, nref, Bref, bref, yield = 1)$Y) - Catch
+  }
+
+  F <- if (Catch > 0) {
+    errmax <- err(Fmax)
+    if (errmax < 0) Fmax else uniroot(err, lower = 0, upper = Fmax, tol = tol)$root
+  } else {
+    0
+  }
+
+  c(project(ws, MMs, F * Fs, F * fs, Nref, nref, Bref, bref, yield), F = F)
+}
+
+
+## Uniroot alternatives
+uu <- function(f, lower, upper,f.lower,f.upper, tol = 1e-8, maxiter =1000L, ...) {
+  val <- .External2(stats:::C_zeroin2, function(arg) f(arg, ...),
+                    lower, upper, f.lower, f.upper, tol, as.integer(maxiter))
+  return(val[1])
+}
+
+
+projectC_alt2 <- function(ws,MMs,Fs,fs,Catch,Nref,nref=1,Bref=NA,bref=nref,yield=2L,
+                        Fmax=2.5,tol=1.0E-6) {
+
+  ## Function to calculate error in modelled yield
+  err <- function(F) {
+    sum(project(ws,MMs,F*Fs,F*fs,Nref,nref,Bref,bref,yield=1)$Y) - Catch
+  }
+
+  if(Catch > 0) {
+    errmax <- err(Fmax)
+    if(errmax < 0) {
+      ## Catch is unattainable
+      F <- Fmax
+    } else {
+      ## Solve err(F) = 0
+      sol <- uu(err,lower=0,upper=Fmax,f.lower=-Catch,f.upper=errmax,tol=tol)
+      F <- sol
+    }
+  } else {
+    F <- 0
+  }
+
+  ## Recalculate
+  c(project(ws,MMs,F*Fs,F*fs,Nref,nref,Bref,bref,yield),F=F)
+}
+
+
 ## ----
 
 
@@ -590,6 +705,21 @@ ageStructureS <- function(R,Msf,M,Fsf=0,F=0,plus=FALSE,N0=0) {
       if(plus) N[n] <- N[n]+Np
     }
   }
+  N
+}
+
+ageStructureS_alt <- function(R, Msf, M, Fsf = 0, F = 0, plus = FALSE, N0 = 0) {
+  n <- length(Msf)
+  S <- exp(-M * Msf - F * Fsf)
+  N <- rep(N0, length.out = n)
+  N[1L] <- R[1L]
+
+  for (k in seq_len(length(R) - 1L)) {
+    N <- N * S
+    N <- c(R[k + 1L], N[-n])
+    if (plus) N[n] <- N[n] + N[n + 1L]
+  }
+
   N
 }
 ## ----
