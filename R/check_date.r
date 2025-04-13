@@ -1,21 +1,28 @@
 
 #' @description
-#' \lifecycle{experimental}
-#' In order to check the dates when using 365 increments in a Grym simulation this function helps translate the dates into increments or the other way around. The function will warn you if either of the dates fall in a leap year and the increment number or date may be out by 1. If this occurs, recommend changing the years to get correct increment numbers.
+#' In order to check the dates when using 365 increments in a Grym 
+#' simulation this function helps translate the dates into increments 
+#' or the other way around. The function will warn you if either of the 
+#' dates fall in a leap year and the increment number or date may be out 
+#' by 1. If this occurs, recommend changing the years to get correct 
+#' increment numbers.
 #'
 #' @title Checking increment dates
 #'
-#' @param inc_1 The start date of the projection year in the ISO8601 format "YYYY-MM-DD"
-#' @param inc_2 Either an increment number or a date in the ISO8601 format "YYYY-MM-DD"
+#' @param inc_1 The start date of the projection year in the ISO8601 
+#' format "YYYY-MM-DD"
+#' @param inc_2 Either an increment number or a date in the ISO8601 
+#' format "YYYY-MM-DD"
 #'
-#' @return When inc_2 is an increment number `check_dates` returns the date that increment refers to. If given a date `check_dates` returns the increment number in the year from the start date.
-#' @export
+#' @return When `inc_2` is an increment number `check_dates` returns the 
+#' date that increment refers to. If given a date `check_dates` returns 
+#' the increment number in the year from the start date.
 #'
 #' @examples
 #' check_dates(inc_1="2018-12-01", inc_2="2019-01-21")
 #' check_dates(inc_1="2018-12-01", inc_2=94)
 #'
-
+#' @export
 check_dates<-function(inc_1="2019-01-01", inc_2=1){
   if(missing(inc_1)){stop("inc_1 is missing and must be a date in the format of YYYY-MM-DD")}
   leapyears<-seq(from=1900, to=2200, by= 4)

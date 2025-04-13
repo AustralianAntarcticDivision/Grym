@@ -1,0 +1,39 @@
+citHeader("Please cite the following articles when using this package:")
+
+
+bibentry(
+  bibtype  = "Article",
+  title    = "Grym: a new open-source implementation of the generalised yield model for flexible stock assessments.",
+  author   = c(person("Dale", "Maschette"), 
+               person("Simon", "Wotherspoon"),
+               person("Philippe", "Ziegler"),
+               person("Thanassekos", "Stephane"),
+               person("Keith", "Reid"),
+               person("So", "Kawaguchi"),
+               person("Dirk", "Welsford")),
+  journal  = "CCAMLR Science",
+  year     = "2023",
+  volume   = "24",
+  number   = "1",
+  pages    = "69-94",
+  textVersion  = paste("Maschette, D., Wotherspoon, S., Ziegler, P., Thanassekos, S., Reid, K., Kawaguchi, S., and Welsford, D. (2023).",
+                       "Grym: a new open-source implementation of the generalised yield model for flexible stock assessments.",
+                       "CCAMLR Science (24):69-94")
+)
+
+
+bibentry(
+  bibtype  = "Article",
+  title    = "A generalised model for evaluating yield and the long-term status of fish stocks under conditions of uncertainty.",
+  author   = c(person("A.J.", "Constable"),
+               person("W.K.", "De la Mare")),
+  journal  = "CCAMLR Science",
+  year     = "1996",
+  volume   = "3",
+  number   = "3",
+  pages    = "1-54",
+  textVersion  = paste("Constable, A.J. and De la Mare, W.K. (1996).",
+                       "A generalised model for evaluating yield and the long-term status of fish stocks under conditions of uncertainty.",
+                       "CCAMLR Science (3):1-54")
+)
+

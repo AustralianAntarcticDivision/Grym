@@ -11,7 +11,7 @@ rampOgive(x, x50, xrange)
 
 \item{x50}{mid-point of ramp}
 
-\item{xrange}{with of ramp}
+\item{xrange}{width of ramp}
 }
 \value{
 A matrix or vector of probabilities of the same size as x
